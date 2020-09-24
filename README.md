@@ -1,10 +1,11 @@
 <html>
 <body>
-<h5>How to set up</h5>
+<h5>How to try out</h5>
 Put veo.js and veo.html in same folder. Open in browser and issue commands from console. <br>
 
 <h5>Examples</h5>
 Callbacks are optional. Default is console.log.<br><br>
+<b>var veo = Veo()</b> //set up<br>
 <b>veo.server("159.89.87.58","8080")</b> <br>
 <b>veo.sync()</b> //sync to current height <br>
 <b>veo.top()</b> //top header <br>
