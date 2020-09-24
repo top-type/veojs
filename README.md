@@ -9,7 +9,7 @@
 <b>veo.pub()</b> <br>
 <b>veo.account(callback)</b> //confirmed account state, callback optional </br>
 <b>veo.unconfirmed(callback)</b> </br>
-<b>veo.send(amount, to)</b> </br>
+<b>veo.send(amount, to)</b> //amount in satoshis </br>
 </body>
 </html>
 	
