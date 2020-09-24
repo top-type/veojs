@@ -1,6 +1,6 @@
 <html>
 <body>
-<h4>Usage</h6>
+<h4>Usage</h4>
 
 <b>veo.server("159.89.87.58","8080")</b> //set server you talk to <br>
 <b>veo.sync()</b> //sync to current height </br>
