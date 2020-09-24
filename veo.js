@@ -2174,9 +2174,9 @@ function post_txs(txs, callback) {
     rpc.post(["txs", [-6].concat(txs)],
              function(x) {
                  if(x == "ZXJyb3I="){
-                     callback("server rejected the tx");
+                     callback(-1);
                  }else{
-                     callback("Published tx with id: ".concat(x));
+                     callback(x);
                  }
              });
 };
@@ -3197,41 +3197,7 @@ function keys_function1() {
 	    Callback(x[1]);
         });
     }
-    var update_balance_callback = function(){
-        return(0);
-    };
-    function update_balance() {
-        var trie_key = pubkey_64();
-        var headers_top = headers_object.top();
-        if (headers_top == 0) {
-            setTimeout(update_balance,
-                       20);
-            return(0);
-        }
-        //var top_hash = hash(headers_object.serialize(headers_object.top()));
-        rpc.post(["account", trie_key], function(unconfirmed) {
-            var U = unconfirmed[1] / token_units();
-            
-            merkle.request_proof("accounts", trie_key, function(x) {
-                var C = x[1] / token_units();
-                //set_balance(C);
-                var S = ("your balance ").concat(
-                    (C).toString()).concat(
-                        " VEO");
-                if (!(C == U)) {
-                    S = S.concat(
-                        ", unconfirmed: ").concat(
-                            (U-C).toString()).concat(
-                                " VEO");
-                };
-                update_balance_callback();
-            });
-        });
-    }
-    function save_keys() {
-        download(keys_internal.getPrivate("hex"), save_name.value, "text/plain");
-	update_pubkey();
-    }
+   
     function encrypt(val, to) {
         return encryption_object.send(val, to, keys_internal);
     }
@@ -3247,9 +3213,6 @@ function keys_function1() {
             decrypt: decrypt,
             check_balance: check_balance,
             keys_internal: (function() {return keys_internal;}),
-            update_balance:update_balance,
-            update_balance_callback: (function (x) {
-                update_balance_callback = x;}),
             compress: compress_pub,
             decompress: decompress_pub,
 			brainWallet: brainWallet};
@@ -3430,6 +3393,7 @@ function signing_test4() {
 //api
 
 var veo = {};
+var FEE = 152050;
 veo.server = function(ip,port) {
 	SERVER_IP = ip;
 	SERVER_PORT = port;
@@ -3466,22 +3430,25 @@ veo.send = function(amount, to, callback) {
 	if (!callback) callback = console.log;
 	rpc.post(["account", keys.pub()], function(ma) {
 		var nonce = ma[2] + 1;
-		var fee = 152050
 		to = parse_address(to);
 		rpc.post(["account", to], function(them) {
 			var tx;
             if(them == "empty"){
-				tx = ["create_acc_tx", keys.pub(), nonce, fee, to, amount];
+				tx = ["create_acc_tx", keys.pub(), nonce, FEE, to, amount];
             } 
 			else {
-		        tx = ["spend", keys.pub(), nonce, fee, to, amount, 0];
+		        tx = ["spend", keys.pub(), nonce, FEE, to, amount, 0];
             }
-			console.log("Created tx:");
-			console.log(JSON.stringify(tx));
 			var stx = keys.sign(tx);
 			post_txs([stx], callback);
 		});
 	});		
+}
+
+veo.sweep = function(to,callback) {
+	veo.unconfirmed(function(acc) {
+		veo.send(acc[1]-FEE, to, callback)
+	});
 }
 
 return veo;
