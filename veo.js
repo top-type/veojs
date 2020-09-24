@@ -3408,7 +3408,7 @@ veo.top = function () {
 	return headers_object.top();
 }
 
-veo.key = function (passphrase) {
+veo.setAccount = function (passphrase) {
 	keys.brainWallet(passphrase);
 }
 
