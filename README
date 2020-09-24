@@ -1,4 +1,5 @@
 <html>
+<body>
 <h6>Usage</h6>
 
 veo.server("159.89.87.58","8080") //set server you talk to
@@ -8,5 +9,6 @@ veo.pub() //public key
 veo.account(callback) //confirmed account state, add callback to do stuff (console.log default) 
 veo.unconfirmed(callback) //unconfirmed account state
 veo.send(amount, to, callback)
+</body>
 </html>
 	
