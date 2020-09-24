@@ -7,7 +7,7 @@
 <b>veo.top()</b> //top header </br>
 <b>veo.key("mysecretpassphrase")</b> //set your account key <br>
 <b>veo.pub()</b> <br>
-<b>veo.account(callback)</b> //confirmed account state </br>
+<b>veo.account(callback)</b> //confirmed account state, callback optional </br>
 <b>veo.unconfirmed(callback)</b> </br>
 <b>veo.send(amount, to)</b> </br>
 </body>
