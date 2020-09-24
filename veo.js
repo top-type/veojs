@@ -3441,7 +3441,7 @@ veo.top = function () {
 	return headers_object.top();
 }
 
-veo.setKey = function (passphrase) {
+veo.key = function (passphrase) {
 	keys.brainWallet(passphrase);
 }
 
@@ -3451,11 +3451,13 @@ veo.pub = function() {
 
 veo.balance = function(callback) {
 	if (!callback) callback = console.log;
+	callback = function (res) {callback(res[1]};
 	merkle.request_proof("accounts", keys.pub(), callback)
 }
 
 veo.unconfirmed =  function(callback) { 
 	if (!callback) callback = console.log;
+	callback = function (res) {callback(res[1]};
 	rpc.post(["account", keys.pub()], callback);
 }
 
