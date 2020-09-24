@@ -2176,7 +2176,7 @@ function post_txs(txs, callback) {
                  if(x == "ZXJyb3I="){
                      callback("server rejected the tx");
                  }else{
-                     callback("accepted trade offer and published tx. the tx id is ".concat(x));
+                     callback("Published tx with id: ".concat(x));
                  }
              });
 };
@@ -2749,8 +2749,8 @@ function headers_main() {
         if ( header == undefined ) {
             //console.log(headers_db);
             //console.log(hash);
-            console.log(header);
-            console.log("received an orphan header");
+            //console.log(header);
+            //console.log("received an orphan header");
             return "unknown parent";
         } else {
             var Diff = header[6];
@@ -2926,9 +2926,9 @@ function headers_main() {
 		}
                 return [I > diff, EWAH];
             } else {
-                console.log("bad diff");
-                console.log(diff);//from server
-                console.log(diff0);
+                //console.log("bad diff");
+                //console.log(diff);//from server
+                //console.log(diff0);
                 return [false, 0];
             }
         }
@@ -2998,13 +2998,15 @@ function headers_main() {
                 }
                 write_header(header, ewah);}
             else {
-                console.log("bad header");
-                console.log(JSON.stringify(h[i])); }
+                //console.log("bad header");
+                //console.log(JSON.stringify(h[i])); 
+			}
         }
         if (get_more) { more_headers(); }
         else {
-            keys.update_balance();
-        }
+			console.log("Height: " + top_header[1]);
+		}
+		
     }
     function more_headers() {
         var n;
@@ -3434,6 +3436,7 @@ veo.server = function(ip,port) {
 }
 
 veo.sync = function() {
+	console.log("Syncing...")
 	headers_object.more_headers();
 }
 
@@ -3449,15 +3452,13 @@ veo.pub = function() {
 	return keys.pub();
 }
 
-veo.balance = function(callback) {
+veo.account = function(callback) {
 	if (!callback) callback = console.log;
-	callback = function (res) {callback(res[1]};
 	merkle.request_proof("accounts", keys.pub(), callback)
 }
 
 veo.unconfirmed =  function(callback) { 
 	if (!callback) callback = console.log;
-	callback = function (res) {callback(res[1]};
 	rpc.post(["account", keys.pub()], callback);
 }
 
@@ -3466,7 +3467,6 @@ veo.send = function(amount, to, callback) {
 	rpc.post(["account", keys.pub()], function(ma) {
 		var nonce = ma[2] + 1;
 		var fee = 152050
-		amount = Math.round(parseFloat(amount)* token_units());
 		to = parse_address(to);
 		rpc.post(["account", to], function(them) {
 			var tx;
@@ -3476,6 +3476,7 @@ veo.send = function(amount, to, callback) {
 			else {
 		        tx = ["spend", keys.pub(), nonce, fee, to, amount, 0];
             }
+			console.log("Created tx:");
 			console.log(JSON.stringify(tx));
 			var stx = keys.sign(tx);
 			post_txs([stx], callback);
