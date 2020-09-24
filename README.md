@@ -12,6 +12,7 @@ Put veo.js and veo.html in same folder. Open in browser and issue commands from 
 <b>veo.account(callback)</b> //confirmed account state, callback optional </br>
 <b>veo.unconfirmed(callback)</b> </br>
 <b>veo.send(amount, to, callback)</b> //amount in satoshis </br>
+<b>veo.sweep(to, callback)</b> //send max amount </br>
 </body>
 </html>
 	

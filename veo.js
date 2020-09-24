@@ -3447,7 +3447,8 @@ veo.send = function(amount, to, callback) {
 
 veo.sweep = function(to,callback) {
 	veo.unconfirmed(function(acc) {
-		veo.send(acc[1]-FEE, to, callback)
+		console.log(acc[1], FEE);
+		veo.send(acc[1]-FEE-1, to, callback)
 	});
 }
 
