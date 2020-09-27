@@ -3531,14 +3531,17 @@ veo.unconfirmed =  function(callback) {
 	rpc.post(["account", keys.pub()], callback);
 }
 
-veo.send = function(amount, to, callback) { 
+veo.send = function(amount, to, cid, type, callback) { 
 	if (!callback) callback = console.log;
 	rpc.post(["account", keys.pub()], function(ma) {
 		var nonce = ma[2] + 1;
 		to = parse_address(to);
 		rpc.post(["account", to], function(them) {
 			var tx;
-            if(them == "empty"){
+			if (cid) {
+				tx = ["sub_spend_tx", keys.pub(), nonce, FEE, to, amount, cid, type];
+			}
+            else if(them == "empty"){
 				tx = ["create_acc_tx", keys.pub(), nonce, FEE, to, amount];
             } 
 			else {
@@ -3625,8 +3628,8 @@ veo.getBalances = function(cid, callback) {
 				var trie_key = sub_accounts.key(veo.pub(), cid, type);
 				var trie_key = btoa(array_to_string(trie_key));
 				merkle.request_proof("sub_accounts", trie_key, function(x) {
-					if (x[0] === "sub_acc") amounts.push(x[1])
-					else amounts.push(0);
+					if (x[0] === "sub_acc") amounts.unshift(x[1])
+					else amounts.unshift(0);
 					amountBuilder(amounts, type-1);
 				});
 			}	
@@ -3648,7 +3651,7 @@ veo.myCurrencies = function(ip, port, callback) {
 			if (index === res.currencies.length) callback(res)
 			else {
 				veo.getBalances(res.currencies[index], function(amounts) {
-					res.currencies[index] = {cid: res.currencies[index], amounts: amounts]};
+					res.currencies[index] = {cid: res.currencies[index], amounts: amounts};
 					amountCollector(index + 1);
 				});
 			}
