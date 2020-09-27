@@ -1,4 +1,5 @@
-//CORE BigInteger.js sjcl.js sha256.js elliptic.min.js format.js rpc.js files.js codecBytes.js crypto.js merkle_proofs.js
+//CORE BigInteger.js sjcl.js sha256.js elliptic.min.js format.js rpc.js files.js codecBytes.js crypto.js 
+//merkle_proofs.js  headers.js(modified) keys.js(modified) (also copy paste stuff from others) 
 function Veo() {
 var bigInt = (function (undefined) {
     "use strict";
@@ -3390,6 +3391,110 @@ function signing_test4() {
     console.log(verify(data, sig, k));
 }
 
+sub_accounts = (function(){
+    function key(pub, cid, type) {
+        return(hash(
+            (string_to_array(atob(pub)))
+                .concat(string_to_array(atob(cid)))
+                .concat(integer_to_array(type, 32))));
+    };
+    function normal_key(p, c, t){
+        return(btoa(array_to_string(key(p, c, t))))
+    };
+    return({key: key, normal_key: normal_key});
+})();
+
+var scalar_derivative = (function(){
+    //var contract_bytes = atob("bpYZNRc5AzAyj4cUGIYWjDpGFBRHFHBxSG8AAAAAAXgAAAAAAngWAAAAAAN4gxSDFhSDFhSDFKyHAAAAAAF5jBWGhgAAAAACeQAAAAADeYw6RhQUAgAAAAEwRxSQjIcWFBYCAAAAIGRuan/EdSKkhbAp0OEF6cQDv9x9li1vx5O6vqNMm3KlcUiGKIYoO0ZHDUiNhxYUAgAAAAEBO0ZHDUiEAAAAAAN5FoIA/////wAAAAADeTMWgoiMBAPo");
+    var contract_bytes = atob(
+        "bpYZNRc5AzAyj4cUGIYWjDpGFBRHFHBxSG8AAAAAAXgAAAAAAngWAAAAAAN4gxSDFhSDFhSDFKyHAAAAAAJ5jBWGhgAAAAABeQAAAAADeYw6RhQUAgAAAAEwRxSQjIcWFBYCAAAAIGRuan/EdSKkhbAp0OEF6cQDv9x9li1vx5O6vqNMm3KlcUiGKIYoO0ZHDUiNhxYUAgAAAAEBO0ZHDUiEAAAAAAN5FoIA/////wAAAAADeTMWgoiMBAPo");
+//        "bpYZNRc5AzAyj4cUGIYWjDpGFBRHFHBxSG8AAAAAAXgAAAAAAngWAAAAAAN4gxSDFhSDFhSDFKyHAAAAAAF5jBWGhgAAAAACeQAAAAADeYw6RhQUAgAAAAEwRxSQjIcWFBYCAAAAIGRuan/EdSKkhbAp0OEF6cQDv9x9li1vx5O6vqNMm3KlcUiGKIYoO0ZHDUiNhxYUAgAAAAEBO0ZHDUiEAAAAAAN5FoIA/////wAAAAADeTMWgoiMBAPo");
+    function oracle_text(max_price, thing_to_measure){
+        var oracle_text_part = ("MaxPrice = ")
+            .concat(max_price)
+            .concat("; MaxVal = 4294967295; B = ")
+            .concat(thing_to_measure)
+            .concat(" from $0 to $MaxPrice; max(0, min(MaxVal, (B * MaxVal / MaxPrice)) is ");
+        return(oracle_text_part);
+    };
+    function contract_maker(thing_to_measure, max_price) {
+        var oracle_text_part =
+            oracle_text(max_price,
+                        thing_to_measure);
+        console.log(oracle_text_part); 
+        var L = oracle_text_part.length;
+        var settings =
+            ([22]) //swap
+//            ([0]) //int
+//            .concat(integer_to_array(oracle_start, 4))
+            .concat([2])//binary
+            .concat(integer_to_array(L, 4))
+            .concat(string_to_array(oracle_text_part));
+        var full_contract = btoa(array_to_string(settings)
+                                 .concat(contract_bytes));
+        console.log(full_contract);
+        return(full_contract);
+    };
+    function contract_hash(c){
+        return(btoa(array_to_string(
+            hash(string_to_array(atob(c))))));
+    };
+
+    return({
+        hash: contract_hash,
+        maker: contract_maker,
+        oracle_text: oracle_text
+    });
+})();
+
+var binary_derivative = (function(){
+//binary derivative contract based on a single oracle. 
+    var static_binary_derivative = atob("AAAAAAF4gxSDFhSDFhSDFKyHAAAAAAF5OkZHDUgUFI2HFhQCAAAAAwAAABaGjzpGhIwWgowWggD/////FoKIjAQD6EcUjTpGhAD/////FoKMFoKMFoKIjAQD6EcUjjpGhIwWggD/////FoKMFoKIjAQD6EcUFIQAgAAAABaCAH////8WgowWgogEE4iWSEhI");
+//    static_binary_derivative = array_to_string(
+//        [1,255,255,255,255,3,0,132,130,130,3,0,3,100]);
+    //int 0, max, nil, cons, cons, 0, 100
+    function contract_maker2(oracle_id) {
+        var serialized_oracle_id = string_to_array(atob(oracle_id));
+        var full_code = array_to_string(([2,0,0,0,32]).concat(serialized_oracle_id)).concat(static_binary_derivative);
+        return(btoa(full_code));
+    };
+    function contract_hash_maker2(oracle_id){
+        var c = contract_maker2(oracle_id);
+        return(btoa(array_to_string(hash(string_to_array(atob(c))))));
+    };
+    function id_maker2(oracle_id, many_types) {
+        var ch = contract_hash_maker2(oracle_id);
+        return(id_maker(ch, many_types));
+    };
+    function id_maker(
+        contract_hash, many_types,
+        source_id, source_type)
+    {
+        if(!(source_id)){
+            source_id = btoa(array_to_string(integer_to_array(0, 32)));
+            source_type = 0;
+        };
+        var to_hash = 
+            string_to_array(atob(contract_hash))
+            .concat(string_to_array(atob(source_id)))
+            .concat(integer_to_array(many_types, 2))
+            .concat(integer_to_array(source_type, 2));
+        return(btoa(array_to_string(hash(to_hash))));
+    };
+    function contract_hash_maker2(oracle_id){
+        var c = contract_maker2(oracle_id);
+        return(btoa(array_to_string(hash(string_to_array(atob(c))))));
+    };
+    
+
+    return({
+        id_maker: id_maker,
+        id_maker2: id_maker2,
+        contract2: contract_maker2,
+        hash: contract_hash_maker2,
+    });
+})();
+
 //api
 
 var veo = {};
@@ -3450,6 +3555,90 @@ veo.sweep = function(to,callback) {
 		console.log(acc[1], FEE);
 		veo.send(acc[1]-FEE-1, to, callback)
 	});
+}
+
+veo.newContract = function(text, max_price, Source, SourceType, callback) {
+	if (!callback) callback = console.log;
+	var contract = scalar_derivative.maker(text, max_price);
+    var CH = scalar_derivative.hash(contract);
+	console.log("new scalar contract make tx");
+    console.log(JSON.stringify(CH));
+    console.log(JSON.stringify([text, max_price]));
+	var MT = 2;
+	if(!(Source)){
+        Source = btoa(array_to_string(integer_to_array(0, 32)));
+        SourceType = 0;
+    }
+	var tx = ["contract_new_tx", keys.pub(), CH, FEE, MT, Source, SourceType];
+	var stx = keys.sign(tx);
+	post_txs([stx], function(msg){
+            callback(msg)
+    });
+}
+
+veo.contractId = function(hash,typeCount,source,sourceType) {
+	return binary_derivative.id_maker(hash, typeCount, source, sourceType);
+}
+  
+veo.getContract = function(cid, callback) {
+	if (!callback) callback = console.log;
+	merkle.request_proof("contracts", cid, callback);
+}
+
+veo.shatter = function(cid,amount,callback) {
+	if (!callback) callback = console.log;
+	rpc.post(["account", keys.pub()], function(account){
+		if(account == "empty"){
+			callback(0);
+        };
+        merkle.request_proof("contracts", cid, function(contract){
+			if(contract === "empty"){
+				callback(0);
+            };
+            var nonce = account[2] + 1;
+            var many_types = contract[2];
+            var source = contract[8];
+            var source_type = contract[9];
+            var tx = ["contract_use_tx",
+                        keys.pub(),
+                        nonce,
+                        FEE,
+                        cid,
+                        amount,
+                        many_types,
+                        source,
+                        source_type
+                    ];
+            console.log(tx);
+            var stx = keys.sign(tx);
+            post_txs([stx], callback);
+        });
+    });
+}
+
+veo.getBalances = function(cid, callback) {
+	if (!callback) callback = console.log;
+	veo.getContract(cid, function(contract) {
+		var amountBuilder = function(amounts,type) {
+			if (type === 0) callback(amounts);
+			else {
+				var trie_key = sub_accounts.key(veo.pub(), cid, type);
+				var trie_key = btoa(array_to_string(trie_key));
+				merkle.request_proof("sub_accounts", trie_key, function(x) {
+					if (x[0] === "sub_acc") amounts.push(x[1])
+					else amounts.push(0);
+					amountBuilder(amounts, type-1);
+				});
+			}	
+		}
+		amountBuilder([], contract[2]);
+	});
+}
+
+veo.init = function() {
+	veo.server("159.89.87.58","8080");
+	veo.sync();
+	veo.setAccount('lola');
 }
 
 return veo;
