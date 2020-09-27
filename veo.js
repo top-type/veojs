@@ -3635,6 +3635,28 @@ veo.getBalances = function(cid, callback) {
 	});
 }
 
+veo.myCurrencies = function(ip, port, callback) {
+	if (!callback) callback = console.log;
+	rpc.post(["account", keys.pub()], function(response){
+		if (response === "error") {
+			callback(0);
+		}
+		res = {};
+		res.currencies = response[1][3].slice(1);
+		res.liquidityShares = response[1][4].slice(1);
+		function amountCollector(index) {
+			if (index === res.currencies.length) callback(res)
+			else {
+				veo.getBalances(res.currencies[index], function(amounts) {
+					res.currencies[index] = {cid: res.currencies[index], amounts: amounts]};
+					amountCollector(index + 1);
+				});
+			}
+		}
+		amountCollector(0);
+	},ip,port)
+}
+
 veo.init = function() {
 	veo.server("159.89.87.58","8080");
 	veo.sync();
