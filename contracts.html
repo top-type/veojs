@@ -1,0 +1,158 @@
+</html>
+<!DOCTYPE html>
+<html>
+  <head>
+  </head>
+  <body>
+    <h1>Light Wallet - Contracts - Amoveo</h1>
+    <a href="?mode=production">mainnet mode</a><br />
+    <a href="?mode=testnet">testnet mode</a><br />
+    <a href="?mode=test">test mode</a><br />
+    <a href="./home.html">main menu for this light node.</a><br />
+
+    <script type="text/javascript" src="BigInteger.js" ></script>
+    <script type="text/javascript" src="sjcl.js" ></script>
+    <script type="text/javascript" src="sha256.js" ></script>
+    <script type="text/javascript" src="elliptic.min.js" ></script>
+    <script type="text/javascript" src="format.js" ></script>
+  <script type="text/javascript">
+    //configure["new_account"] = false;
+    configure["watch_only_account"] = false;
+    configure["channel_view"] = false;
+    //configure["more_headers_button"] = true;
+    configure["spend_tx_interface"] = false;
+  </script>
+    <script type="text/javascript" src="rpc.js" ></script>
+    <script type="text/javascript" src="files.js" ></script>
+    <script type="text/javascript" src="codecBytes.js" ></script>
+    <script type="text/javascript" src="crypto.js" ></script>
+    <script type="text/javascript" src="merkle_proofs.js" ></script>
+    <script type="text/javascript" src="encryption_library.js" ></script>
+    <script type="text/javascript" src="server.js" ></script>
+    <script type="text/javascript" src="headers.js" ></script>
+    <script type="text/javascript" src="keys.js" ></script>
+    <script type="text/javascript" src="signing.js" ></script>
+    <script type="text/javascript" src="encryption.js" ></script>
+
+
+<!--    
+    <h1>Binary Contracts</h1>
+    <h2>binary derivative id generator</h2>
+        <div id="binary_id" /> 
+    <script type="text/javascript" src="binary_id.js" ></script>
+    <h2>new binary derivative contract</h2>
+    <div id="new_contract" />
+    <script type="text/javascript" src="new_contract.js" ></script>
+    <h2>resolve binary contract</h2>
+    <div id="resolve_binary_contract" />
+    <script type="text/javascript" src="resolve_binary_contract.js" ></script>
+    <h2>binary contract winnings</h2>
+    <div id="binary_contract_winnings" />
+    <script type="text/javascript" src="binary_contract_winnings.js" ></script>
+    <br>
+--->
+
+    <h1>Scalar Contracts</h1>
+    <h2>scalar derivative id generator</h2>
+    <div id="scalar_id" />
+    <script type="text/javascript" src="scalar_id.js" ></script>
+    <h2>new scalar derivative contract</h2>
+    <div id="new_scalar_contract" />
+    <script type="text/javascript" src="new_scalar_contract.js" ></script>
+    <!---
+    <h2>scalar oracle creation</h2>
+    <div id="scalar_oracle_creation" />
+--->
+    <script type="text/javascript" src="scalar_oracle_creation.js" ></script>
+    <h2>scalar oracle creation</h2>
+    <div id="simplified_scalar_oracle_creation" />
+    <script type="text/javascript" src="simplified_scalar_oracle_creation.js" ></script>
+    <!----
+    <h2>resolve scalar contract</h2>
+    <div id="resolve_scalar_contract" />
+    <script type="text/javascript" src="resolve_scalar_contract.js" ></script>
+--->
+    <h2>resolve scalar contract</h2>
+    <div id="simplified_resolve_scalar_contract" />
+    <script type="text/javascript" src="simplified_resolve_scalar_contract.js" ></script>
+    <h2>scalar contract winnings</h2>
+    <div id="scalar_contract_winnings" />
+    <script type="text/javascript" src="scalar_contract_winnings.js" ></script>
+    <br>
+
+    <h1>Subcurrencies</h1>
+    <h2>subcurrency balance</h2>
+    <div id="subcurrency_balance" />
+    <script type="text/javascript" src="subcurrency_balance.js" ></script>
+    <h2>subcurrency spender</h2>
+    <div id="subcurrency_spender" />
+    <script type="text/javascript" src="subcurrency_spender.js" ></script>
+    <h2>subcurrency combiner</h2>
+    <div id="subcurrency_combiner" />
+    <script type="text/javascript" src="subcurrency_combiner.js" ></script>
+    <h2>subcurrency set buy</h2>
+    <div id="subcurrency_set_buy" />
+    <script type="text/javascript" src="subcurrency_set_buy.js" ></script>
+    <br>
+
+    <h1>Trading</h1>
+    <h2>explore order book swap offers</h2>
+    <div id="explore_swap_offers" />
+    <script type="text/javascript" src="explore_swap_offers.js" ></script>
+    <h2>order book swap viewer</h2>
+    <div id="swap_viewer" />
+    <script type="text/javascript" src="swap_viewer.js" ></script>
+    <h2>order book swap offer maker</h2>
+    <div id="swap_offer" />
+    <script type="text/javascript" src="swap_offer.js" ></script>
+    <h2>publish an order book swap offer</h2>
+    <div id="publish_swap_offer" />
+    <script type="text/javascript" src="publish_swap_offer.js" ></script>
+    <h2>check contract</h2>
+    <div id="check_binary_contract" />
+    <script type="text/javascript" src="check_binary_contract.js" ></script>
+    <!-----
+    <h2>teach binary contract</h2>
+    <div id="teach_binary_contract" />
+    <script type="text/javascript" src="teach_binary_contract.js" ></script>
+----->
+    <h2>teach scalar contract</h2>
+    <div id="teach_scalar_contract" />
+    <script type="text/javascript" src="teach_scalar_contract.js" ></script>
+    <br>
+    
+    <h1>On-chain Constant Product Market Maker</h1>
+    <h2>market viewer</h2>
+    <div id="market_viewer" />
+    <script type="text/javascript" src="market_viewer.js" ></script>
+    <h2>market swap</h2>
+    <div id="market_swap" />
+    <script type="text/javascript" src="market_swap.js" ></script>
+    <h2>market liquidity balance</h2>
+    <div id="market_liquidity_balance" />
+    <script type="text/javascript" src="market_liquidity_balance.js" ></script>
+    <h2>market liquidity</h2>
+    <div id="market_liquidity" />
+    <script type="text/javascript" src="market_liquidity.js" ></script>
+    <h2>new market</h2>
+    <div id="new_market" />
+    <script type="text/javascript" src="new_market.js" ></script>
+
+
+  </body>
+<!---  
+    <script type="text/javascript" src="new_contract.js" ></script>
+  <script type="text/javascript" src="new_scalar_contract.js" ></script>
+----->
+<script type="text/javascript" src="new_contract.js" ></script>
+  <script type="text/javascript" src="multi_tx.js" ></script>
+  <script type="text/javascript" src="binary_derivative.js" ></script>
+  <script type="text/javascript" src="scalar_derivative.js" ></script>
+  <script type="text/javascript" src="swaps.js" ></script>
+  <script type="text/javascript" src="sub_accounts.js" ></script>
+    <script type="text/javascript" src="spend_tx.js" ></script>
+  <script type="text/javascript" src="contracts_test_configuration.js" ></script>
+  <!---
+  ----->
+</html>
+

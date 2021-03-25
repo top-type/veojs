@@ -1,0 +1,22 @@
+calls
+
+top
+height
+keys
+storeKeys
+forgetKeys
+balance
+buildTx(params) params[type, currentTx etc...] current tx for multi support returns tx
+	types: spend, setBuy, contract, oracle, oracleBet, oracleClose, claim, combine...
+signTx
+publishTx
+getContract
+contractId
+contracts
+shareContract
+getOracle
+oracles
+governanceValues
+
+
+forget all market stuff
