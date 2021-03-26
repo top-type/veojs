@@ -22,3 +22,15 @@ var callCreator = function (func, argCount) {
 }
 veo.balance = callCreator(keys.balance,0);
 veo.send = callCreator(spend_tx.send, 2);
+
+function max(to, callback) {
+	spend_tx.max_send_amount(veo.pub(), to, callback);
+}
+veo.max = callCreator(max, 1);
+
+function sweep(to, callback) {
+	veo.max(to, function(amount, type) {
+		veo.send(to, amount, callback);
+	});
+}
+veo.sweep = callCreator(sweep, 1);
