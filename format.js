@@ -598,7 +598,7 @@ function post_txs(txs, callback) {
                  if(x == "ZXJyb3I="){
                      callback("server rejected the tx");
                  }else{
-                     callback("published tx. the tx id is ".concat(x));
+                     callback(x);
                  }
              });
 };

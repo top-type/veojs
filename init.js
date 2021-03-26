@@ -34,3 +34,8 @@ function sweep(to, callback) {
 	});
 }
 veo.sweep = callCreator(sweep, 1);
+
+function makeTx(to, amount, callback) {
+	spend_tx.make_tx(to, keys.pub(), amount, callback); 
+}
+veo.makeTx = callCreator(makeTx, 2);
