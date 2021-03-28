@@ -9,9 +9,20 @@ veo.server = function(ip,port) {
 		return {ip: IP, port: PORT};
 	}
 };
+
+veo.explorer = function(ip,port) {
+	if (ip) {
+		EXPLORE_IP = ip;
+		EXPLORE:PORT = port;
+	}
+	else {
+		return {ip: EXPLORE_IP, port: EXPLORE_PORT};
+	}
+};
 veo.top = headers_object.top;
 veo.height = function() {return veo.top()[1]};
 veo.setKeys = keys.passphrase;
+veo.watch = keys.watch;
 veo.pub = keys.pub;
 
 var callCreator = function (func, argCount) {
@@ -39,3 +50,13 @@ function makeTx(to, amount, callback) {
 	spend_tx.make_tx(to, keys.pub(), amount, callback); 
 }
 veo.makeTx = callCreator(makeTx, 2);
+
+function balances(callback) {
+	rpc.post(["account", keys.pub()], function(response) {
+		var res = {};
+		res.accounts = response[1][3].slice(1);
+		res.shares = response[1][4].slice(1);
+		callback(res);
+	}, EXPLORE_IP, EXPLORE_PORT);
+}
+veo.balances = callCreator(balances, 0);
