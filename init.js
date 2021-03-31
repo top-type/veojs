@@ -13,7 +13,7 @@ veo.server = function(ip,port) {
 veo.explorer = function(ip,port) {
 	if (ip) {
 		EXPLORE_IP = ip;
-		EXPLORE:PORT = port;
+		EXPLORE_PORT = port;
 	}
 	else {
 		return {ip: EXPLORE_IP, port: EXPLORE_PORT};
@@ -50,6 +50,28 @@ function makeTx(to, amount, callback) {
 	spend_tx.make_tx(to, keys.pub(), amount, callback); 
 }
 veo.makeTx = callCreator(makeTx, 2);
+
+function subBalance(cid, callback) {
+	merkle.request_proof("contracts", cid, function(c) {
+		var many_types;
+    if(c == "empty"){
+      callback("Contract doesn't exist");
+			return;
+    } 
+		else {
+			many_types = c[2];
+    }
+		function balanceBuilder(type, acc) {
+			if (type === 0) return callback(acc);
+			var trie_key = sub_accounts.normal_key(veo.pub(), cid, type);
+			rpc.post(["sub_accounts", trie_key], function(x) {
+				if (x[0] === "sub_acc") acc.push([x[1], type]);
+				balanceBuilder(type-1, acc)
+			});
+		}
+		balanceBuilder(many_types, []);
+	})
+}
 
 function balances(callback) {
 	rpc.post(["account", keys.pub()], function(response) {
