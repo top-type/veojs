@@ -19,6 +19,17 @@ veo.explorer = function(ip,port) {
 		return {ip: EXPLORE_IP, port: EXPLORE_PORT};
 	}
 };
+
+veo.contractServer = function(ip,port) {
+	if (ip) {
+		CONTRACT_IP = ip;
+		CONTRACT_PORT = port;
+	}
+	else {
+		return {ip: CONTRACT_IP, port: CONTRACT_PORT};
+	}
+};
+
 veo.top = headers_object.top;
 veo.height = function() {return veo.top()[1]};
 veo.setKeys = keys.passphrase;
@@ -62,7 +73,12 @@ function subBalance(cid, callback) {
 			many_types = c[2];
     }
 		function balanceBuilder(type, acc) {
-			if (type === 0) return callback(acc);
+			if (type === 0) {
+				 rpc.post(["read", 3, cid], function(oracle_text) {
+					var text = oracle_text ? atob(oracle_text[1]) : undefined;
+					callback({id: cid, text: text, balances: acc});
+				 }, CONTRACT_IP, CONTRACT_PORT);
+			}
 			var trie_key = sub_accounts.normal_key(veo.pub(), cid, type);
 			rpc.post(["sub_accounts", trie_key], function(x) {
 				if (x[0] === "sub_acc") acc.push([x[1], type]);
@@ -72,8 +88,9 @@ function subBalance(cid, callback) {
 		balanceBuilder(many_types, []);
 	})
 }
+veo.subBalance = callCreator(subBalance, 1);
 
-function balances(callback) {
+function myContracts(callback) {
 	rpc.post(["account", keys.pub()], function(response) {
 		var res = {};
 		res.accounts = response[1][3].slice(1);
@@ -81,4 +98,18 @@ function balances(callback) {
 		callback(res);
 	}, EXPLORE_IP, EXPLORE_PORT);
 }
+veo.myContracts = callCreator(myContracts, 0);
+
+function balances(callback) {
+	veo.myContracts(function(res) {
+		res.accounts.forEach(function (id) {
+			veo.subBalance(id, callback);
+		});
+		res.shares.forEach(function (id) {
+			veo.subBalance(id, callback);
+		});
+	});
+}
 veo.balances = callCreator(balances, 0);
+
+
