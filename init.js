@@ -112,4 +112,24 @@ function balances(callback) {
 }
 veo.balances = callCreator(balances, 0);
 
+function sendSub(cid, type, to, amount, callback){
+  rpc.post(["account", veo.pub()], function(account){
+    var nonce = account[2] + 1;
+    var fee = 152050;
+    var tx = ["sub_spend_tx",
+                veo.pub(),
+                nonce,
+                fee,
+                to,
+                amount,
+                cid,
+                type
+							];
+    console.log(tx);
+    console.log(JSON.stringify(tx));
+    var stx = keys.sign(tx);
+		rpc.post(["txs", [-6, stx]], callback);
+  });
+};
+veo.sendSub = callCreator(sendSub, 4);
 
