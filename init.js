@@ -78,11 +78,17 @@ function subBalance(cid, callback) {
 					var text = oracle_text ? atob(oracle_text[1]) : undefined;
 					callback({id: cid, text: text, balances: acc});
 				 }, CONTRACT_IP, CONTRACT_PORT);
+				 return;
 			}
 			var trie_key = sub_accounts.normal_key(veo.pub(), cid, type);
 			rpc.post(["sub_accounts", trie_key], function(x) {
-				if (x[0] === "sub_acc") acc.push([x[1], type]);
-				balanceBuilder(type-1, acc)
+				let res = {type: type};
+				if (x[0] === "sub_acc") res.unconfirmed = x[1];
+				merkle.request_proof("sub_accounts", trie_key, function(s) {
+					if (s[0] === "sub_acc") res.confirmed = s[1];
+					if (res.confirmed || res.unconfirmed) acc.push(res);
+					balanceBuilder(type-1, acc)
+				});
 			});
 		}
 		balanceBuilder(many_types, []);
@@ -93,21 +99,21 @@ veo.subBalance = callCreator(subBalance, 1);
 function myContracts(callback) {
 	rpc.post(["account", keys.pub()], function(response) {
 		var res = {};
-		res.accounts = response[1][3].slice(1);
-		res.shares = response[1][4].slice(1);
-		callback(res);
+		res.contracts = response[1][3].slice(1);
+		res.markets = response[1][4].slice(1);
+		callback(res.contracts);
 	}, EXPLORE_IP, EXPLORE_PORT);
 }
 veo.myContracts = callCreator(myContracts, 0);
 
 function balances(callback) {
 	veo.myContracts(function(res) {
-		res.accounts.forEach(function (id) {
-			veo.subBalance(id, callback);
-		});
-		res.shares.forEach(function (id) {
-			veo.subBalance(id, callback);
-		});
+		function rateLimited(contracts, delay) {
+			if (contracts.length === 0) return;
+			veo.subBalance(contracts.pop());
+			setTimeout(function () {rateLimited(contracts, delay)}, delay);
+		}
+		rateLimited(res, 500);
 	});
 }
 veo.balances = callCreator(balances, 0);
