@@ -139,3 +139,27 @@ function sendSub(cid, type, to, amount, callback){
 };
 veo.sendSub = callCreator(sendSub, 4);
 
+function markets(callback) {
+	rpc.post(["markets"], function(l) {
+            l = l.slice(1);
+            callback(l)
+        }, CONTRACT_IP, CONTRACT_PORT);
+};
+veo.markets = callCreator(markets, 0);
+
+function offers(callback) {
+	function builder(marketList, acc) {
+		if (marketList.length == 0) return callback(acc);
+		var m = marketList[0];
+		rpc.post(["read", m[2]], function(z) {
+			var orders = z[1][7];
+            orders = orders.slice(1);
+			acc.push({market: m[2], cid1: m[3], type1: m[4], cid2: m[5], type2: m[6], offers: orders});
+			builder(marketList.slice(1), acc)
+		}, CONTRACT_IP, CONTRACT_PORT);
+    }
+	veo.markets(function (markets) {
+		builder(markets, []);
+	});
+};
+veo.offers = callCreator(offers, 0);
