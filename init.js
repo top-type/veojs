@@ -147,19 +147,50 @@ function markets(callback) {
 };
 veo.markets = callCreator(markets, 0);
 
-function offers(callback) {
+function marketsAndOrders(callback) {
 	function builder(marketList, acc) {
 		if (marketList.length == 0) return callback(acc);
 		var m = marketList[0];
-		rpc.post(["read", m[2]], function(z) {
-			var orders = z[1][7];
-            orders = orders.slice(1);
-			acc.push({market: m[2], cid1: m[3], type1: m[4], cid2: m[5], type2: m[6], offers: orders});
-			builder(marketList.slice(1), acc)
+		rpc.post(["read", 3, m[3]], function(oracle_text1) {
+			rpc.post(["read", 3, m[5]], function(oracle_text2) {
+				rpc.post(["read", m[2]], function(z) {
+					var orders = z[1][7];
+					orders = orders.slice(1);
+					t1 = oracle_text1 ? atob(oracle_text1[1]) : undefined;
+					if (m[4] == 0) t1 = 'Veo';
+					t2 = oracle_text2 ? atob(oracle_text2[1]) : undefined;
+					if (m[6] == 0) t2 = 'Veo';
+					acc.push({market: m[2], text1: t1, text2: t2,
+					cid1: m[3], type1: m[4], cid2: m[5], type2: m[6], orders: orders});
+					builder(marketList.slice(1), acc)
+				}, CONTRACT_IP, CONTRACT_PORT);
+			}, CONTRACT_IP, CONTRACT_PORT);
 		}, CONTRACT_IP, CONTRACT_PORT);
     }
 	veo.markets(function (markets) {
 		builder(markets, []);
 	});
 };
-veo.offers = callCreator(offers, 0);
+veo.marketsAndOrders = callCreator(marketsAndOrders, 0);
+
+function trades(callback) {
+	veo.marketsAndOrders(function(res) {
+		var tids = [];
+		res.forEach(function(m) {
+			m.orders.forEach(function(o) {
+				tids.push([o[3], m.text1, m.text2]);
+			});
+		});
+		function builder(tids, acc) {
+			if (tids.length == 0) return callback(acc);
+			rpc.post(["read", 2, tids[0][0]], function(t){
+				acc.push({id: tids[0][0], text1: tids[0][1], text2: tids[0][2], type : t[1][0], creator: t[1][1], 
+				cid1: t[1][4], cid2: t[1][7], type1: t[1][5], type2: t[1][8], amount1: t[1][6],
+				amount2: t[1][9],});
+				builder(tids.slice(1), acc);
+			}, CONTRACT_IP, CONTRACT_PORT);
+		};
+		builder(tids, []);
+	});
+}
+veo.trades = callCreator(trades, 0);
