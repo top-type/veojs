@@ -28,14 +28,17 @@
 	<script type="text/javascript" src="init.js" ></script>
 	<script type="text/javascript" src="jquery.js" ></script>
 	<script type="text/javascript" src="bootstrap.js" ></script>
-	<script type="text/javascript" src="main.js" ></script>
 	
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
-	<a class="navbar-brand" href="#">1gdgf... 1.7 VEO</a>
-     <form class="d-flex" id="setAccountForm">
-        <input class="form-control me-sm-2" type="password" placeholder="passphrase">
-        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit">Set</button>
+  <ul class="navbar-nav me-auto balance" style="display:none">
+  <li class="nav-item balance" style="display:none">
+          <a class="nav-link balance" href="#" style="display:none"id="balance"></a>
+  </li>
+ </ul>
+     <form class="d-flex setClass" style="display:none">
+        <input class="form-control me-sm-2 setClass" type="password" placeholder="passphrase" style="display:none" id="passphrase">
+        <button class="btn btn-outline-dark my-2 my-sm-0 setClass" type="submit" id="setButton" style="display:none">Set</button>
       </form>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -44,22 +47,48 @@
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Bets
+          <a class="nav-link" href="#">Bets
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">New</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Wallet</a>
+          <a class="nav-link" href="#">Create</a>
         </li>
       </ul>
-      <form class="d-flex">
-        <input class="form-control me-sm-2" type="text" placeholder="Search">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-      </form>
     </div>
   </div>
 </nav>
+<div id="bets" class="route">
+bets
+</div>
+<div id="wallet" class="route" style="display:none">
+<form>
+  <fieldset>
+  <legend>Receive</legend>
+  <div class="form-group col-sm-4">
+      1bfbx...
+        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
+		<button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="qrButton" >Qr</button>
+     </div>
+  <legend>Send</legend>
+      <div class="form-group col-sm-4">
+      <input type="text" class="form-control" id="recipient" placeholder="Recipient">
+      <small id="recipientHelp" class="form-text text-muted"></small>
+	  <br>
+	  	      <div class="input-group mb-3">
+      <button class="btn btn-outline-dark input-group-text">Max</button>
+      <input type="text" class="form-control" id="amount" aria-label="Amount" placeholder="Amount">
+	  <button class="btn btn-outline-dark input-group-text" id="sendButton">Send</button>
+	  </div>
+	   </div>
+  </fieldset>
+</form>
+</div>
+<div id="create" class="route" style="display:none">
+create
+</div>
+
+
+
+		<script type="text/javascript" src="main.js" ></script>
   </body>
 </html>
