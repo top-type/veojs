@@ -1,4 +1,4 @@
-function buildBetsTable() {
+function buildBrowseTable() {
 	veo.trades(function(trades) {
 		var res = '<table class="table table-hover"><thead>'+
 		'<tr>'+
@@ -17,7 +17,7 @@ function buildBetsTable() {
 						'</tr>';
 		});
 		res += '</tbody></table>';
-		$('#bets').html(res);
+		$('#browse').html(res);
 	});
 }
 
@@ -32,26 +32,58 @@ function updateBalance() {
 		if (u < 0) {
 			html += ' <span class="text-danger">(+'+u+')</span>';
 		}
-		$('#balance').html(html);
+		$('#walletLink').html(html);
 	})
 };
 
 $('#setButton').click(function(e) {
 	e.preventDefault();
-	console.log('here');
 	var passphrase = $('#passphrase').val();
+	$('#passphrase').val('');
 	localStorage.setItem('passphrase', passphrase);
 	veo.setKeys(passphrase);
 	$('.setClass').hide();
-	$('.balance').show()
+	$('.balance').show();
 	updateBalance();
 });
-
 
 function route(r) {
 	$('.route').hide();
 	$('#'+r).show();
 };
+
+$('#walletLink').click(function(e) {
+	e.preventDefault();
+	console.log('here');
+	route('wallet');
+});
+
+$('#browseLink').click(function(e) {
+	e.preventDefault();
+	route('browse');
+	buildBrowseTable();
+});
+
+$('#createLink').click(function(e) {
+	e.preventDefault();
+	route('create');
+});
+
+$('#forgetLink').click(function(e) {
+	e.preventDefault();
+	localStorage.removeItem('passphrase');
+	veo.setKeys(undefined);
+	$('#walletLink').html('');
+	$('.setClass').show();
+	$('.balance').hide();
+});
+
+$('.navbar-nav>li>a').on('click', function(){
+    $('.navbar-collapse').collapse('hide');
+});
+
+
+
 
 $(document).ready(function () {
 	if (localStorage.getItem('passphrase')) {
