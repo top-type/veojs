@@ -65,9 +65,8 @@
   <fieldset>
   <legend>Receive</legend>
   <div class="form-group col-sm-6">
-      1bfbx...
+      <span id="pub">1bfbx...</span>
         <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
-		<button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="qrButton" >Qr</button>
      </div>
   <legend>Send</legend>
       <div class="form-group col-sm-6">
@@ -75,7 +74,7 @@
       <small id="recipientHelp" class="form-text text-muted"></small>
 	  <br>
 	  	      <div class="input-group mb-3">
-      <button class="btn btn-outline-dark input-group-text">Max</button>
+      <button class="btn btn-outline-dark input-group-text" id="maxButton">Max</button>
       <input type="text" class="form-control" id="amount" aria-label="Amount" placeholder="Amount">
 	  <button class="btn btn-outline-dark input-group-text" id="sendButton">Send</button>
 	  </div>
@@ -84,7 +83,7 @@
 </form>
 </div>
 <div id="browse" class="route" style="display:none">
-browse
+
 </div>
 <div id="create" class="route" style="display:none">
 create
