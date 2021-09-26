@@ -54,24 +54,24 @@ function route(r) {
 	$('#'+r).show();
 };
 
-$('#walletLink').click(function(e) {
+$('#walletLink').on('click touchstart', function(e) {
 	e.preventDefault();
 	console.log('here');
 	route('wallet');
 });
 
-$('#browseLink').click(function(e) {
+$('#browseLink').on('click touchstart', function(e) {
 	e.preventDefault();
 	route('browse');
 	buildBrowseTable();
 });
 
-$('#createLink').click(function(e) {
+$('#createLink').on('click touchstart', function(e) {
 	e.preventDefault();
 	route('create');
 });
 
-$('#forgetLink').click(function(e) {
+$('#forgetLink').on('click touchstart', function(e) {
 	e.preventDefault();
 	localStorage.removeItem('passphrase');
 	veo.forget();
@@ -80,11 +80,11 @@ $('#forgetLink').click(function(e) {
 	$('.balance').hide();
 });
 
-$('.navbar-nav>li>a').on('click', function(){
+$('.navbar-nav>li>a').on('click touchstart', function(){
     $('.navbar-collapse').collapse('hide');
 });
 
-$('#sendButton').click(function(e) {
+$('#sendButton').on('click touchstart', function(e) {
 	e.preventDefault();
 	var recipient = $('#recipient').val();
 	var amount = parseFloat($('#amount').val()) * 1e8;
@@ -93,7 +93,7 @@ $('#sendButton').click(function(e) {
 	});
 });
 
-$('#maxButton').click(function(e) {
+$('#maxButton').on('click touchstart', function(e) {
 	e.preventDefault();
 	var recipient = $('#recipient').val();
 	veo.max(recipient, function (res) {
@@ -101,7 +101,7 @@ $('#maxButton').click(function(e) {
 	});
 });
 
-$('#copyButton').click(function(e) {
+$('#copyButton').on('click touchstart', function(e) {
 	e.preventDefault();
 	var copyToClipboard = function(secretInfo) {
 		var $body = document.getElementsByTagName('body')[0];
