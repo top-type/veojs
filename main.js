@@ -22,6 +22,7 @@ function buildBrowseTable() {
 }
 
 function updateBalance() {
+	if (!veo.keys()) return;
 	veo.balance(function(res) {
 		console.log(res);
 		var html = veo.pub().substring(0,5) + ': ' + res.confirmed/1e8
@@ -73,7 +74,7 @@ $('#createLink').click(function(e) {
 $('#forgetLink').click(function(e) {
 	e.preventDefault();
 	localStorage.removeItem('passphrase');
-	veo.setKeys(undefined);
+	veo.forget();
 	$('#walletLink').html('');
 	$('.setClass').show();
 	$('.balance').hide();

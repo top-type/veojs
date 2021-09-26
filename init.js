@@ -35,6 +35,8 @@ veo.height = function() {return veo.top()[1]};
 veo.setKeys = keys.passphrase;
 veo.watch = keys.watch;
 veo.pub = keys.pub;
+veo.forget = keys.forget;
+veo.keys = keys.keys_internal;
 
 var callCreator = function (func, argCount) {
 	return function(...args) {

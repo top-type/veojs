@@ -142,6 +142,7 @@ function keys_function1() {
             ec: (function() { return ec; }),
 						watch: watch_only_func,
 						passphrase: function (phrase) {keys_internal = new_keys_entropy(phrase)},
+						forget: function (phrase) {keys_internal = undefined},
             encrypt: encrypt,
             decrypt: decrypt,
             balance: get_balance,
