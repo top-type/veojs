@@ -1,11 +1,6 @@
 function buildBrowseTable() {
 	veo.trades(function(trades) {
-		var res = '<table class="table table-hover"><thead>'+
-		'<tr>'+
-		'<th colspan="2"><span class="text-muted">Gain</span></th>'+
-		'<th colspan="2"><span class="text-muted">Lose</span></th>'+
-		'</tr>'+
-		'</thead><tbody>';
+		var res = '<table class="table table-hover"><thead></thead><tbody>';
 		trades.forEach(function(trade) {
 			var mod1 = trade.type1 == 2 ? '<span class="text-warning">NOT</span> ' : '';
 			var mod2 = trade.type2 == 2 ? '<span class="text-warning">NOT</span> ' : '';
@@ -78,6 +73,7 @@ $('#forgetLink').click(function(e) {
 	$('#walletLink').html('');
 	$('.setClass').show();
 	$('.balance').hide();
+	route('browse');
 });
 
 $('.navbar-nav>li>a').on('click', function(){
@@ -128,9 +124,13 @@ $(document).ready(function () {
 	}
 	else {
 		$('.setClass').show();
+		veo.forget();
 	}
 	setInterval(function() {
 		updateBalance();
-	}, 5000)
+		buildBrowseTable()
+	}, 10000)
 	
+	buildBrowseTable()
+	route('browse');
 });
