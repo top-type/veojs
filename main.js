@@ -2,6 +2,7 @@ function buildBrowseTable() {
 	veo.trades(function(trades) {
 		var res = '<table class="table table-hover"><thead></thead><tbody>';
 		trades.forEach(function(trade) {
+			console.log(trade.raw);
 			var mod1 = trade.type1 == 2 ? '<span class="text-warning">NOT</span> ' : '';
 			var mod2 = trade.type2 == 2 ? '<span class="text-warning">NOT</span> ' : '';
 			res += '<tr class="table-active" id="' + trade.id+ '">' +
@@ -83,7 +84,7 @@ $('.navbar-nav>li>a').on('click', function(){
 $('#sendButton').click(function(e) {
 	e.preventDefault();
 	var recipient = $('#recipient').val();
-	var amount = parseFloat($('#amount').val()) * 1e8;
+	var amount = Math.round(parseFloat($('#amount').val()) * 1e8);
 	veo.send(recipient, amount, function (res) {
 		updateBalance();
 	});
@@ -112,8 +113,14 @@ $('#copyButton').click(function(e) {
 	
 });
 
-
-
+$('#createButton').click(function(e) {
+	var text = $('#statement').val();
+	var amount1 =  Math.round(parseFloat($('#amount1').val())*1e8);
+	var amount2 =  Math.round(parseFloat($('#amount2').val())*1e8);
+	var expires =  parseInt($('#expires').val());
+	var flag = $('#statementSelect').val() === 'True';
+	veo.makeBet(text, flag, amount1, amount2, expires);
+});
 
 $(document).ready(function () {
 	if (localStorage.getItem('passphrase')) {

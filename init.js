@@ -187,7 +187,7 @@ function trades(callback) {
 			if (tids.length == 0) return callback(acc);
 			rpc.post(["read", 2, tids[0][0]], function(t){
 				acc.push({id: tids[0][0], text1: tids[0][1], text2: tids[0][2], type : t[1][0], creator: t[1][1], 
-				cid1: t[1][4], cid2: t[1][7], type1: t[1][5], type2: t[1][8], amount1: t[1][6],
+				cid1: t[1][4], cid2: t[1][7], type1: t[1][5], type2: t[1][8], amount1: t[1][6], raw: t,
 				amount2: t[1][9],});
 				builder(tids.slice(1), acc);
 			}, CONTRACT_IP, CONTRACT_PORT);
@@ -196,3 +196,53 @@ function trades(callback) {
 	});
 }
 veo.trades = callCreator(trades, 0);
+
+function makeBet(text, flag, amount1, amount2, expires, callback) {
+	var ZERO = btoa(array_to_string(integer_to_array(0, 32)));
+	var MP = 1;
+	var contract = scalar_derivative.maker(text, MP);
+	var CH = scalar_derivative.hash(contract);
+	var fee = 200000
+	var Fee = 152050;
+    var MT = 2;
+	var Source = btoa(array_to_string(integer_to_array(0, 32)));
+    var SourceType = 0;
+	var tx = ["contract_new_tx", keys.pub(), CH, Fee, MT, Source, SourceType];
+	var cid = binary_derivative.id_maker(CH, 2);
+	var swap = {};
+        swap.type1 = 0;
+        swap.type2 = flag ? 1 : 2;
+        swap.cid1 = ZERO;
+        swap.cid2 = cid;
+        swap.amount1 = amount1;
+        swap.amount2 = amount2;
+        swap.partial_match = false;
+        swap.acc1 = keys.pub();
+        swap.end_limit = headers_object.top()[1] + expires;
+    var offer99 = {};
+        offer99.type1 = flag ? 1 : 2;
+        offer99.type2 = 0;
+        offer99.cid1 = cid;
+        offer99.cid2 = ZERO;
+        offer99.amount1 = amount2;
+        offer99.amount2 = Math.round((amount2 * 0.998) - (fee * 5))
+        offer99.partial_match = false;
+        offer99.acc1 = keys.pub();
+        offer99.end_limit = headers_object.top()[1] + expires + 1;
+        console.log(expires);
+        console.log(JSON.stringify(swap));
+        var signed_offer = swaps.pack(swap);
+        var signed_99 = swaps.pack(offer99);
+		console.log(signed_offer,signed_99);
+	var max_price = 1;
+	rpc.post(["add", 3, btoa(text), 0, max_price, ZERO, 0], function(res1) {
+		rpc.post(["add", signed_offer, signed_99], function(res2) {
+			callback(res1,res2);
+		}, CONTRACT_IP, 8090)
+	},CONTRACT_IP, 8090);
+};
+veo.makeBet = callCreator(makeBet, 5);
+
+function accept(text, swap_offer) {
+	return;
+}

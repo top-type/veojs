@@ -24,6 +24,9 @@
 	<script type="text/javascript" src="signing.js" ></script>
 	<script type="text/javascript" src="spend_tx.js" ></script>
 	<script type="text/javascript" src="sub_accounts.js" ></script>
+	<script type="text/javascript" src="scalar_derivative.js" ></script>
+	<script type="text/javascript" src="binary_derivative.js" ></script>
+	<script type="text/javascript" src="swaps.js" ></script>
 		
 	<script type="text/javascript" src="init.js" ></script>
 	<script type="text/javascript" src="jquery.js" ></script>
@@ -90,12 +93,18 @@
   <fieldset>
   <div class="form-group col-sm-6">
 	<div class="form-group">
-	<br>
 	<input type="text" class="form-control" id="statement" placeholder="Statement">
+	<br>
+	<select class="form-select" id="statementSelect">
+        <option>True</option>
+        <option>False</option>
+    </select>
 	<br>
 	<input type="text" class="form-control" id="amount1" placeholder="Amount you risk">
 	<br>
-	<input type="text" class="form-control" id="amount2" placeholder="Amount he risks">
+	<input type="text" class="form-control" id="amount2" placeholder="Amount they risk">
+	<br>
+	<input type="text" class="form-control" id="expires" placeholder="expires (in blocks)">
 	<br>
 	<button class="btn btn-outline-dark" id="createButton">Create</button>
 	</div>
