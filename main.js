@@ -1,19 +1,24 @@
 function buildBrowseTable() {
 	veo.trades(function(trades) {
 		var res = '<table class="table table-hover"><thead></thead><tbody>';
+		tidLookup = {};
 		trades.forEach(function(trade) {
-			console.log(trade.raw);
 			var mod1 = trade.type1 == 2 ? '<span class="text-warning">NOT</span> ' : '';
 			var mod2 = trade.type2 == 2 ? '<span class="text-warning">NOT</span> ' : '';
-			res += '<tr class="table-active" id="' + trade.id+ '">' +
+			res += '<tr class="table-active browseTr" id="'+trade.id+'">' +
 						'<td><span class="text-success">+'+trade.amount1/1e8+'</span></td>' +
 						'<td>'+ mod1 + trade.text1.substring(0, 10)+'</td>' +
 						'<td><span class="text-danger">-'+trade.amount2/1e8+'</span></td>' +
 						'<td>'+ mod2 + trade.text2.substring(0, 10)+'</td>' +
 						'</tr>';
+		tidLookup[trade.id] = [trade.text2,trade.raw];
 		});
 		res += '</tbody></table>';
 		$('#browse').html(res);
+		$('.browseTr').click(function(e) {
+			e.preventDefault();
+			accept(...tidLookup[e.currentTarget.id]);
+		});
 	});
 }
 
@@ -52,7 +57,6 @@ function route(r) {
 
 $('#walletLink').click(function(e) {
 	e.preventDefault();
-	console.log('here');
 	route('wallet');
 });
 
@@ -114,6 +118,7 @@ $('#copyButton').click(function(e) {
 });
 
 $('#createButton').click(function(e) {
+	e.preventDefault();
 	var text = $('#statement').val();
 	var amount1 =  Math.round(parseFloat($('#amount1').val())*1e8);
 	var amount2 =  Math.round(parseFloat($('#amount2').val())*1e8);
@@ -121,6 +126,8 @@ $('#createButton').click(function(e) {
 	var flag = $('#statementSelect').val() === 'True';
 	veo.makeBet(text, flag, amount1, amount2, expires);
 });
+
+
 
 $(document).ready(function () {
 	if (localStorage.getItem('passphrase')) {

@@ -108,7 +108,7 @@ var multi_tx = (function(){
             //console.log(Acc);
             var Nonce = Acc[2] + 1;
             pay_dev_tx(Txs, function(txlist){
-                Txs = Txs.concat(txlist);//comment out this line to not pay the dev fee.
+                //Txs = Txs.concat(txlist);//comment out this line to not pay the dev fee.
                 Txs = zero_accounts_nonces(Txs);
                 //console.log(JSON.stringify(Txs));
                 //return(0);

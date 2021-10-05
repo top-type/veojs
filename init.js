@@ -198,6 +198,7 @@ function trades(callback) {
 veo.trades = callCreator(trades, 0);
 
 function makeBet(text, flag, amount1, amount2, expires, callback) {
+	console.log(flag);
 	var ZERO = btoa(array_to_string(integer_to_array(0, 32)));
 	var MP = 1;
 	var contract = scalar_derivative.maker(text, MP);
@@ -228,7 +229,7 @@ function makeBet(text, flag, amount1, amount2, expires, callback) {
         offer99.amount2 = Math.round((amount2 * 0.998) - (fee * 5))
         offer99.partial_match = false;
         offer99.acc1 = keys.pub();
-        offer99.end_limit = headers_object.top()[1] + expires + 1;
+        offer99.end_limit = headers_object.top()[1] + expires + 5;
         console.log(expires);
         console.log(JSON.stringify(swap));
         var signed_offer = swaps.pack(swap);
@@ -243,6 +244,43 @@ function makeBet(text, flag, amount1, amount2, expires, callback) {
 };
 veo.makeBet = callCreator(makeBet, 5);
 
+
 function accept(text, swap_offer) {
+	var ZERO = btoa(array_to_string(integer_to_array(0, 32)));
+	var MP = 1;
+	var contract = scalar_derivative.maker(text, MP);
+	var CH = scalar_derivative.hash(contract);
+    var MT = 2;
+    var SourceType = 0;
+	var cid = binary_derivative.id_maker(CH, 2);
+	if ((cid !== swap_offer[1][7]) || (ZERO !== swap_offer[1][4])) return ("Mismatch");
+	merkle.request_proof("accounts", keys.pub(), function(Acc){
+		if (Acc === 'empty') return("Account not exist");
+		var bal = Acc[1];
+		var Nonce = Acc[2] + 1;
+		var mintTx = ["contract_use_tx", 0,0,0, cid, swap_offer[1][9], 2, ZERO, 0];
+		var txs = [];
+		merkle.request_proof("contracts", cid, function(Contract){
+			if(Contract == "empty"){
+				var contractTx = ["contract_new_tx", keys.pub(), CH, 0, MT, ZERO, SourceType];
+				txs.push(contractTx);
+			};
+			txs.push(mintTx);
+			var swap_tx = ["swap_tx2", keys.pub(), 0, 0, swap_offer, 1];
+			txs.push(swap_tx);
+			multi_tx.make(txs, function(tx) {
+				console.log(tx);
+				var stx = keys.sign(tx);
+				post_txs([stx], console.log);
+			});
+			
+		});
+		
+	});
+	
+	
+	
+	
+	
 	return;
 }
