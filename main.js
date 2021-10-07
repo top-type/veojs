@@ -5,6 +5,7 @@ function buildBrowseTable() {
 		trades.forEach(function(trade) {
 			var mod1 = trade.type1 == 2 ? '<span class="text-warning">NOT</span> ' : '';
 			var mod2 = trade.type2 == 2 ? '<span class="text-warning">NOT</span> ' : '';
+			console.log(trade);
 			res += '<tr class="table-active browseTr" id="'+trade.id+'">' +
 						'<td><span class="text-success">+'+trade.amount1/1e8+'</span></td>' +
 						'<td>'+ mod1 + trade.text1.substring(0, 10)+'</td>' +
@@ -46,7 +47,7 @@ $('#setButton').click(function(e) {
 	veo.setKeys(passphrase);
 	$('.setClass').hide();
 	$('.balance').show();
-	$('#pub').text(veo.pub().substring(0,27) + '...');
+	$('#pub').text(veo.pub());
 	updateBalance();
 });
 
@@ -55,9 +56,14 @@ function route(r) {
 	$('#'+r).show();
 };
 
-$('#walletLink').click(function(e) {
+$('#sendLink').click(function(e) {
 	e.preventDefault();
-	route('wallet');
+	route('send');
+});
+
+$('#receiveLink').click(function(e) {
+	e.preventDefault();
+	route('receive');
 });
 
 $('#browseLink').click(function(e) {
@@ -133,7 +139,7 @@ $(document).ready(function () {
 	if (localStorage.getItem('passphrase')) {
 		$('.balance').show();
 		veo.setKeys(localStorage.getItem('passphrase'));
-		$('#pub').text(veo.pub().substring(0,27) + '...');
+		$('#pub').text(veo.pub());
 		updateBalance();
 	}
 	else {

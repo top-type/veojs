@@ -50,6 +50,14 @@
 
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
+	  <li class="nav-item">
+          <a class="nav-link" href="#" id="sendLink">Send
+          </a>
+        </li>
+		<li class="nav-item">
+          <a class="nav-link" href="#" id="receiveLink">Receive
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="#" id="browseLink">Browse
           </a>
@@ -64,15 +72,9 @@
     </div>
   </div>
 </nav>
-<div id="wallet" class="route" style="display:none">
+<div id="send" class="route" style="display:none">
 <form>
   <fieldset>
-  <legend>Receive</legend>
-  <div class="form-group col-sm-6">
-      <span id="pub"></span>
-        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
-     </div>
-  <legend>Send</legend>
       <div class="form-group col-sm-6">
       <input type="text" class="form-control" id="recipient" placeholder="Recipient">
       <small id="recipientHelp" class="form-text text-muted"></small>
@@ -85,6 +87,12 @@
 	   </div>
   </fieldset>
 </form>
+</div>
+<div id="receive" class="route" style="display:none">
+<div class="form-group col-sm-6">
+      <div id="pub" style="word-wrap:break-word"></div>
+        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
+     </div>
 </div>
 <div id="browse" class="route" style="display:none">
 
