@@ -35,10 +35,8 @@
 	
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
   <div class="container-fluid">
+  <a class="navbar-brand balance" href="#" id="walletLink" style="display:none"></a>
   <ul class="navbar-nav me-auto balance" style="display:none">
-  <li class="nav-item balance" style="display:none">
-          <a class="nav-link balance" href="#" style="display:none" id="walletLink"></a>
-  </li>
  </ul>
      <form class="d-flex setClass" style="display:none">
         <input class="form-control me-sm-2 setClass" type="password" placeholder="passphrase" style="display:none" id="passphrase">
@@ -50,6 +48,7 @@
 
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
+	  <li class="nav-item"><hr class="border-top"></li>
 	  <li class="nav-item">
           <a class="nav-link" href="#" id="sendLink">Send
           </a>
@@ -58,13 +57,16 @@
           <a class="nav-link" href="#" id="receiveLink">Receive
           </a>
         </li>
+		<li class="nav-item"><hr class="border-top"></li>
         <li class="nav-item">
           <a class="nav-link" href="#" id="browseLink">Browse
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" id="createLink">Create</a>
+		  
         </li>
+		<li class="nav-item"><hr class="border-top"></li>
 		<li class="nav-item">
           <a class="nav-link" href="#" id="forgetLink">Forget</a>
         </li>
