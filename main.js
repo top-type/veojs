@@ -45,8 +45,7 @@ $('#setButton').click(function(e) {
 	$('#passphrase').val('');
 	localStorage.setItem('passphrase', passphrase);
 	veo.setKeys(passphrase);
-	$('.setClass').hide();
-	$('.balance').show();
+	$('#walletLink').html(veo.pub().substring(0,5));
 	$('#pub').text(veo.pub());
 	updateBalance();
 });
@@ -55,6 +54,11 @@ function route(r) {
 	$('.route').hide();
 	$('#'+r).show();
 };
+
+$('#newAccountLink').click(function(e) {
+	e.preventDefault();
+	route('newAccount');
+});
 
 $('#sendLink').click(function(e) {
 	e.preventDefault();
@@ -81,9 +85,7 @@ $('#forgetLink').click(function(e) {
 	e.preventDefault();
 	localStorage.removeItem('passphrase');
 	veo.forget();
-	$('#walletLink').html('');
-	$('.setClass').show();
-	$('.balance').hide();
+	$('#walletLink').html('VEOEX');
 	route('browse');
 });
 
@@ -143,7 +145,7 @@ $(document).ready(function () {
 		updateBalance();
 	}
 	else {
-		$('.setClass').show();
+		$('#walletLink').html('VEOEX');
 		veo.forget();
 	}
 	setInterval(function() {

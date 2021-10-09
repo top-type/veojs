@@ -1,3 +1,6 @@
-add confirmed to balance check
-add read offers
-add create offer
+move create account to own tab rather than top and make default if not logged
+remove what links are shown based on logged status
+fix the risked amounts
+accept bet functionality	
+create 99 upon accepting
+positions/holdings tab

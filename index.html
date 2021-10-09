@@ -38,10 +38,7 @@
   <a class="navbar-brand balance" href="#" id="walletLink" style="display:none"></a>
   <ul class="navbar-nav me-auto balance" style="display:none">
  </ul>
-     <form class="d-flex setClass" style="display:none">
-        <input class="form-control me-sm-2 setClass" type="password" placeholder="passphrase" style="display:none" id="passphrase">
-        <button class="btn btn-outline-dark my-2 my-sm-0 setClass" type="submit" id="setButton" style="display:none">Set</button>
-      </form>
+     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -49,6 +46,10 @@
     <div class="collapse navbar-collapse" id="navbarColor02">
       <ul class="navbar-nav me-auto">
 	  <li class="nav-item"><hr class="border-top"></li>
+	  <li class="nav-item">
+          <a class="nav-link" href="#" id="newAccountLink">New Account
+          </a>
+        </li>
 	  <li class="nav-item">
           <a class="nav-link" href="#" id="sendLink">Send
           </a>
@@ -78,6 +79,7 @@
 <form>
   <fieldset>
       <div class="form-group col-sm-6">
+	  <br>
       <input type="text" class="form-control" id="recipient" placeholder="Recipient">
       <small id="recipientHelp" class="form-text text-muted"></small>
 	  <br>
@@ -92,9 +94,27 @@
 </div>
 <div id="receive" class="route" style="display:none">
 <div class="form-group col-sm-6">
+<br>
       <div id="pub" style="word-wrap:break-word"></div>
+	  <br>
         <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
      </div>
+</div>
+<div id="newAccount" class="route" style="display:none">
+<div class="form-group col-sm-6">
+<form>
+  <fieldset>
+  <br>
+     <input class="form-control" type="password" placeholder="passphrase"  id="passphrase">
+	 <br>
+         <button class="btn btn-outline-dark" type="submit" id="setButton">Set</button>
+     </div>
+	   </fieldset>
+</form>
+</div>
+        
+      
+
 </div>
 <div id="browse" class="route" style="display:none">
 
@@ -104,6 +124,7 @@
   <fieldset>
   <div class="form-group col-sm-6">
 	<div class="form-group">
+	<br>
 	<input type="text" class="form-control" id="statement" placeholder="Statement">
 	<br>
 	<select class="form-select" id="statementSelect">
