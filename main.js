@@ -47,6 +47,12 @@ $('#setButton').click(function(e) {
 	veo.setKeys(passphrase);
 	$('#walletLink').html(veo.pub().substring(0,5));
 	$('#pub').text(veo.pub());
+	$('#sendLink').show();
+	$('#receiveLink').show();
+	$('#createLink').show();
+	$('#forgetLink').show();
+	$('#newAccountLink').hide();
+	route('send');
 	updateBalance();
 });
 
@@ -86,7 +92,12 @@ $('#forgetLink').click(function(e) {
 	localStorage.removeItem('passphrase');
 	veo.forget();
 	$('#walletLink').html('VEOEX');
-	route('browse');
+	$('#sendLink').hide();
+	$('#receiveLink').hide();
+	$('#createLink').hide();
+	$('#forgetLink').hide();
+	$('#newAccountLink').show();
+	route('newAccount');
 });
 
 $('.navbar-nav>li>a').on('click', function(){
@@ -132,21 +143,27 @@ $('#createButton').click(function(e) {
 	var amount2 =  Math.round(parseFloat($('#amount2').val())*1e8);
 	var expires =  parseInt($('#expires').val());
 	var flag = $('#statementSelect').val() === 'True';
-	veo.makeBet(text, flag, amount1, amount2, expires);
+	veo.makeBet(text, flag, amount1, amount1 + amount2, expires);
 });
 
 
 
 $(document).ready(function () {
 	if (localStorage.getItem('passphrase')) {
-		$('.balance').show();
+		$('#newAccountLink').hide();
 		veo.setKeys(localStorage.getItem('passphrase'));
 		$('#pub').text(veo.pub());
 		updateBalance();
+		route('send');
 	}
 	else {
 		$('#walletLink').html('VEOEX');
 		veo.forget();
+		route('newAccount');
+		$('#sendLink').hide();
+		$('#receiveLink').hide();
+		$('#createLink').hide();
+		$('#forgetLink').hide();
 	}
 	setInterval(function() {
 		updateBalance();
@@ -154,5 +171,4 @@ $(document).ready(function () {
 	}, 10000)
 	
 	buildBrowseTable()
-	route('browse');
 });

@@ -250,6 +250,7 @@ function accept(text, swap_offer) {
 	var CH = scalar_derivative.hash(contract);
     var MT = 2;
     var SourceType = 0;
+	var fee = 200000;
 	var cid = binary_derivative.id_maker(CH, 2);
 	if ((cid !== swap_offer[1][7]) || (ZERO !== swap_offer[1][4])) return ("Mismatch");
 	merkle.request_proof("accounts", keys.pub(), function(Acc){
@@ -269,7 +270,10 @@ function accept(text, swap_offer) {
 			multi_tx.make(txs, function(tx) {
 				console.log(tx);
 				var stx = keys.sign(tx);
-				post_txs([stx], console.log);
+				post_txs([stx], function(res) {
+					createOffer(text, swap_offer[1][8] === 2, false, 
+					Math.round((swap_offer[1][9] * 0.998) - (fee * 5)), swap_offer[1][9], 1);
+				});
 			});
 			
 		});
