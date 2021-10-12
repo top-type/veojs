@@ -244,7 +244,7 @@ function makeBet(text, flag, amount1, amount2, expires, callback) {
 veo.makeBet = callCreator(makeBet, 5);
 
 
-function accept(text, swap_offer) {
+function accept(text, swap_offer, callback) {
 	var MP = 1;
 	var contract = scalar_derivative.maker(text, MP);
 	var CH = scalar_derivative.hash(contract);
@@ -270,9 +270,13 @@ function accept(text, swap_offer) {
 			multi_tx.make(txs, function(tx) {
 				console.log(tx);
 				var stx = keys.sign(tx);
-				post_txs([stx], function(res) {
-					createOffer(text, swap_offer[1][8] === 2, false, 
-					Math.round((swap_offer[1][9] * 0.998) - (fee * 5)), swap_offer[1][9], 1);
+				var offer99 = createOffer(text, swap_offer[1][8] === 2, false, 
+				Math.round((swap_offer[1][9] * 0.998) - (fee * 5)), swap_offer[1][9], 1);
+				console.log(offer99)
+				post_txs([stx], function(res1) {
+					rpc.post(["add", offer99, 0], function(res2) {
+						callback(res1,res2);
+					}, CONTRACT_IP, CONTRACT_PORT)
 				});
 			});
 			
@@ -281,5 +285,6 @@ function accept(text, swap_offer) {
 	});
 return;
 }
+veo.makeBet = callCreator(makeBet, 5);
 
 
