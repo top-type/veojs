@@ -5,14 +5,15 @@ function balanceUpdater() {
 	balanceDB[res.id] = res;
 	}); 
 };
-
+var subSelection = {cid: undefined, type: undefined, text: undefined};
 function buildPositionsTable() {
 	var res = '<table class="table table-hover"><thead></thead><tbody>';
 	for (const property in balanceDB) {
 		var item = balanceDB[property];
 		item.balances.forEach(function(b) {
-			var id = $.escapeSelector(property)+ b.type
+			var id = b.type + property;
 			var text = item.text;
+			if(!b.confirmed) b.confirmed = 0;
 			var u = (b.unconfirmed - b.confirmed)/1e8;
 			var balance = b.confirmed/1e8;
 			if (u > 0) {
@@ -30,7 +31,18 @@ function buildPositionsTable() {
 		});
 	}
 	res += '</tbody></table>';
-	$('#positions').html(res);
+	$('#positionsTable').html(res);
+	$('.positionTr').click(function(e) {
+		e.preventDefault();
+		var type = parseInt(e.currentTarget.id.substring(0,1));
+		var contract = e.currentTarget.id.substring(1);
+		var text = type === 1 ? 'TRUE ' : 'FALSE ';
+		text += balanceDB[contract].text;
+		subSelection.text = text;
+		subSelection.cid = contract;
+		subSelection.type = type;
+		$('#subType').val(text);
+	});
 }
 
 function buildBrowseTable() {
@@ -62,6 +74,8 @@ function updateBalance() {
 	if (!veo.keys()) return;
 	veo.balance(function(res) {
 		console.log(res);
+		if (typeof res.confirmed !== 'number') res.confirmed = 0;
+		if (typeof res.unconfirmed !== 'number') res.unconfirmed = 0;
 		var html = veo.pub().substring(0,5) + ': ' + res.confirmed/1e8
 		var u = (res.unconfirmed - res.confirmed)/1e8;
 		if (u > 0) {
@@ -161,6 +175,25 @@ $('#maxButton').click(function(e) {
 	veo.max(recipient, function (res) {
 		$('#amount').val(res/1e8)
 	});
+});
+
+$('#subSendButton').click(function(e) {
+	e.preventDefault();
+	var recipient = $('#subRecipient').val();
+	var amount = Math.round(parseFloat($('#subAmount').val()) * 1e8);
+	veo.sendSub(subSelection.cid, subSelection.type, recipient, amount, function (res) {
+		balanceUpdater();
+	});
+});
+
+$('#subMaxButton').click(function(e) {
+	e.preventDefault();
+	var b = balanceDB[subSelection.cid].balances;
+	var amount = 0;
+	if (b[0].type === subSelection.type) amount = b[0].unconfirmed;
+	else if (b[1].type === subSelection.type) amount = b[1].unconfirmed;
+	else return false;
+	$('#subAmount').val(amount/1e8);
 });
 
 $('#copyButton').click(function(e) {

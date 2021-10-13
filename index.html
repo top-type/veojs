@@ -122,7 +122,24 @@
 
 </div>
 <div id="positions" class="route" style="display:none">
-
+<div id="positionsTable"></div>
+<form>
+  <fieldset>
+      <div class="form-group col-sm-6">
+	  <div class="input-group mb-3">
+      <input type="text" class="form-control" id="subType" placeholder="Currency" disabled>
+	  </div>
+	  <div class="input-group mb-3">
+      <input type="text" class="form-control" id="subRecipient" placeholder="Recipient">
+	  </div>
+	  <div class="input-group mb-3">
+      <button class="btn btn-outline-dark input-group-text" id="subMaxButton">Max</button>
+      <input type="text" class="form-control" id="subAmount" aria-label="Amount" placeholder="Amount">
+	  </div>
+	  <button class="btn btn-outline-dark" id="subSendButton">Send</button>
+	   </div>
+  </fieldset>
+</form>
 </div>
 <div id="create" class="route" style="display:none">
 <form>
