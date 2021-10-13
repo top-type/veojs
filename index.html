@@ -83,24 +83,22 @@
 <form>
   <fieldset>
       <div class="form-group col-sm-6">
-	  <br>
+	  <div class="input-group mb-3">
       <input type="text" class="form-control" id="recipient" placeholder="Recipient">
+	  </div>
       <small id="recipientHelp" class="form-text text-muted"></small>
-	  <br>
-	  	      <div class="input-group mb-3">
+	  <div class="input-group mb-3">
       <button class="btn btn-outline-dark input-group-text" id="maxButton">Max</button>
       <input type="text" class="form-control" id="amount" aria-label="Amount" placeholder="Amount">
-	  <button class="btn btn-outline-dark input-group-text" id="sendButton">Send</button>
 	  </div>
+	  <button class="btn btn-outline-dark" id="sendButton">Send</button>
 	   </div>
   </fieldset>
 </form>
 </div>
 <div id="receive" class="route" style="display:none">
 <div class="form-group col-sm-6">
-<br>
       <div id="pub" style="word-wrap:break-word"></div>
-	  <br>
         <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
      </div>
 </div>
@@ -108,9 +106,9 @@
 <div class="form-group col-sm-6">
 <form>
   <fieldset>
-  <br>
+  <div class="input-group mb-3">
      <input class="form-control" type="password" placeholder="passphrase"  id="passphrase">
-	 <br>
+	</div>
          <button class="btn btn-outline-dark" type="submit" id="setButton">Set</button>
      </div>
 	   </fieldset>
@@ -123,7 +121,7 @@
 <div id="browse" class="route" style="display:none">
 
 </div>
-<div id="positions" class="positions" style="display:none">
+<div id="positions" class="route" style="display:none">
 
 </div>
 <div id="create" class="route" style="display:none">
@@ -131,20 +129,24 @@
   <fieldset>
   <div class="form-group col-sm-6">
 	<div class="form-group">
-	<br>
+	<div class="input-group mb-3">
 	<input type="text" class="form-control" id="statement" placeholder="Statement">
-	<br>
+	</div>
+	<div class="input-group mb-3">
 	<select class="form-select" id="statementSelect">
         <option>True</option>
         <option>False</option>
     </select>
-	<br>
+	</div>
+	<div class="input-group mb-3">
 	<input type="text" class="form-control" id="amount1" placeholder="Amount you risk">
-	<br>
+	</div>
+	<div class="input-group mb-3">
 	<input type="text" class="form-control" id="amount2" placeholder="Amount they risk">
-	<br>
+	</div>
+	<div class="input-group mb-3">
 	<input type="text" class="form-control" id="expires" placeholder="expires (in blocks)">
-	<br>
+	</div>
 	<button class="btn btn-outline-dark" id="createButton">Create</button>
 	</div>
   </div>

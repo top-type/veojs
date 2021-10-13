@@ -1,5 +1,6 @@
 var balanceDB = {};
 function balanceUpdater() {
+	if (!veo.keys()) return;
 	veo.balances(function(res) {
 	balanceDB[res.id] = res;
 	}); 
@@ -12,11 +13,19 @@ function buildPositionsTable() {
 		item.balances.forEach(function(b) {
 			var id = $.escapeSelector(property)+ b.type
 			var text = item.text;
-			if (b.type === 2) text = '<span class="text-warning">NOT</span> ' + text;
+			var u = (b.unconfirmed - b.confirmed)/1e8;
+			var balance = b.confirmed/1e8;
+			if (u > 0) {
+			balance += ' <span class="text-success">(+'+u+')</span>';
+			}
+			if (u < 0) {
+			balance += ' <span class="text-danger">('+u+')</span>';
+			}
+			if (b.type === 2) text = '<span class="text-warning">FALSE</span> ' + text;
+			else text = '<span class="text-primary">TRUE</span> ' + text;
 			res += '<tr class="table-active positionTr" id="'+id+'">' +
-						'<td>'+text+'</span></td>' +
-						'<td>'+b.confirmed/1e8 +'</td>' +
-						'<td>'+b.unconfirmed/1e8+'</span></td>' +
+						'<td>'+text+'</td>' +
+						'<td>'+balance+'</td>' +
 						'</tr>';
 		});
 	}
@@ -80,6 +89,7 @@ $('#setButton').click(function(e) {
 	$('#newAccountLink').hide();
 	route('send');
 	updateBalance();
+	balanceUpdater();
 });
 
 function route(r) {
@@ -187,6 +197,7 @@ $(document).ready(function () {
 		veo.setKeys(localStorage.getItem('passphrase'));
 		$('#pub').text(veo.pub());
 		updateBalance();
+		balanceUpdater();
 		route('send');
 	}
 	else {
@@ -202,6 +213,11 @@ $(document).ready(function () {
 		updateBalance();
 		buildBrowseTable()
 	}, 10000)
+	setInterval(function() {
+		balanceUpdater();
+		buildPositionsTable()
+	}, 10000)
 	
 	buildBrowseTable()
+	buildPositionsTable()
 });
