@@ -1,3 +1,29 @@
+var balanceDB = {};
+function balanceUpdater() {
+	veo.balances(function(res) {
+	balanceDB[res.id] = res;
+	}); 
+};
+
+function buildPositionsTable() {
+	var res = '<table class="table table-hover"><thead></thead><tbody>';
+	for (const property in balanceDB) {
+		var item = balanceDB[property];
+		item.balances.forEach(function(b) {
+			var id = $.escapeSelector(property)+ b.type
+			var text = item.text;
+			if (b.type === 2) text = '<span class="text-warning">NOT</span> ' + text;
+			res += '<tr class="table-active positionTr" id="'+id+'">' +
+						'<td>'+text+'</span></td>' +
+						'<td>'+b.confirmed/1e8 +'</td>' +
+						'<td>'+b.unconfirmed/1e8+'</span></td>' +
+						'</tr>';
+		});
+	}
+	res += '</tbody></table>';
+	$('#positions').html(res);
+}
+
 function buildBrowseTable() {
 	veo.trades(function(trades) {
 		var res = '<table class="table table-hover"><thead></thead><tbody>';
@@ -82,6 +108,12 @@ $('#browseLink').click(function(e) {
 	buildBrowseTable();
 });
 
+$('#positionsLink').click(function(e) {
+	e.preventDefault();
+	route('positions');
+	buildPositionsTable();
+});
+
 $('#createLink').click(function(e) {
 	e.preventDefault();
 	route('create');
@@ -145,6 +177,7 @@ $('#createButton').click(function(e) {
 	var flag = $('#statementSelect').val() === 'True';
 	veo.makeBet(text, flag, amount1, amount1 + amount2, expires);
 });
+
 
 
 

@@ -113,7 +113,7 @@ function balances(callback) {
 	veo.myContracts(function(res) {
 		function rateLimited(contracts, delay) {
 			if (contracts.length === 0) return;
-			veo.subBalance(contracts.pop());
+			veo.subBalance(contracts.pop(), callback);
 			setTimeout(function () {rateLimited(contracts, delay)}, delay);
 		}
 		rateLimited(res, 500);
