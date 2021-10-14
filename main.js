@@ -5,7 +5,7 @@ function balanceUpdater() {
 	balanceDB[res.id] = res;
 	}); 
 };
-var subSelection = {cid: undefined, type: undefined, text: undefined};
+var subSelection = {cid: ZERO, type: 0, text: 'VEO'};
 function buildPositionsTable() {
 	var res = '<table class="table table-hover"><thead></thead><tbody>';
 	for (const property in balanceDB) {
@@ -41,7 +41,7 @@ function buildPositionsTable() {
 		subSelection.text = text;
 		subSelection.cid = contract;
 		subSelection.type = type;
-		$('#subType').val(text);
+		$('#type').val(text);
 	});
 }
 
@@ -75,7 +75,7 @@ function updateBalance() {
 	veo.balance(function(res) {
 		console.log(res);
 		if (typeof res.confirmed !== 'number') res.confirmed = 0;
-		if (typeof res.unconfirmed !== 'number') res.unconfirmed = 0;
+		if (typeof res.unconfirmed !== 'number') res.unconfirmed = res.confirmed;
 		var html = veo.pub().substring(0,5) + ': ' + res.confirmed/1e8
 		var u = (res.unconfirmed - res.confirmed)/1e8;
 		if (u > 0) {
@@ -96,12 +96,12 @@ $('#setButton').click(function(e) {
 	veo.setKeys(passphrase);
 	$('#walletLink').html(veo.pub().substring(0,5));
 	$('#pub').text(veo.pub());
-	$('#sendLink').show();
+	$('#holdingsLink').show();
 	$('#receiveLink').show();
 	$('#createLink').show();
 	$('#forgetLink').show();
 	$('#newAccountLink').hide();
-	route('send');
+	route('holdings');
 	updateBalance();
 	balanceUpdater();
 });
@@ -116,11 +116,6 @@ $('#newAccountLink').click(function(e) {
 	route('newAccount');
 });
 
-$('#sendLink').click(function(e) {
-	e.preventDefault();
-	route('send');
-});
-
 $('#receiveLink').click(function(e) {
 	e.preventDefault();
 	route('receive');
@@ -132,9 +127,9 @@ $('#browseLink').click(function(e) {
 	buildBrowseTable();
 });
 
-$('#positionsLink').click(function(e) {
+$('#holdingsLink').click(function(e) {
 	e.preventDefault();
-	route('positions');
+	route('holdings');
 	buildPositionsTable();
 });
 
@@ -147,8 +142,9 @@ $('#forgetLink').click(function(e) {
 	e.preventDefault();
 	localStorage.removeItem('passphrase');
 	veo.forget();
+	balanceDB = {};
 	$('#walletLink').html('VEOEX');
-	$('#sendLink').hide();
+	$('#holdingsLink').hide();
 	$('#receiveLink').hide();
 	$('#createLink').hide();
 	$('#forgetLink').hide();
@@ -160,40 +156,52 @@ $('.navbar-nav>li>a').on('click', function(){
     $('.navbar-collapse').collapse('hide');
 });
 
+$('#walletLink').click(function(e) {
+	e.preventDefault();
+	if (!veo.keys()) {
+		route('newAccount');
+		return;
+	}
+	route('holdings');
+	subSelection.text = 'VEO';
+	subSelection.cid = ZERO;
+	subSelection.type = 0;
+	$('#type').val('VEO');
+});
+
 $('#sendButton').click(function(e) {
 	e.preventDefault();
 	var recipient = $('#recipient').val();
 	var amount = Math.round(parseFloat($('#amount').val()) * 1e8);
-	veo.send(recipient, amount, function (res) {
+	if (subSelection.cid === ZERO) {
+		veo.send(recipient, amount, function (res) {
 		updateBalance();
-	});
+		});
+	}
+	else {
+		veo.sendSub(subSelection.cid, subSelection.type, recipient, amount, function (res) {
+			balanceUpdater();
+		});
+	}
 });
 
 $('#maxButton').click(function(e) {
 	e.preventDefault();
-	var recipient = $('#recipient').val();
-	veo.max(recipient, function (res) {
+	if (subSelection.cid === ZERO) {
+		var recipient = $('#recipient').val();
+		veo.max(recipient, function (res) {
 		$('#amount').val(res/1e8)
-	});
-});
-
-$('#subSendButton').click(function(e) {
-	e.preventDefault();
-	var recipient = $('#subRecipient').val();
-	var amount = Math.round(parseFloat($('#subAmount').val()) * 1e8);
-	veo.sendSub(subSelection.cid, subSelection.type, recipient, amount, function (res) {
-		balanceUpdater();
-	});
-});
-
-$('#subMaxButton').click(function(e) {
-	e.preventDefault();
-	var b = balanceDB[subSelection.cid].balances;
-	var amount = 0;
-	if (b[0].type === subSelection.type) amount = b[0].unconfirmed;
-	else if (b[1].type === subSelection.type) amount = b[1].unconfirmed;
-	else return false;
-	$('#subAmount').val(amount/1e8);
+		return;
+		});
+	}
+	else {
+		var b = balanceDB[subSelection.cid].balances;
+		var amount = 0;
+		if (b[0].type === subSelection.type) amount = b[0].unconfirmed;
+		else if (b[1].type === subSelection.type) amount = b[1].unconfirmed;
+		else return false;
+		$('#amount').val(amount/1e8);
+	}
 });
 
 $('#copyButton').click(function(e) {
@@ -231,7 +239,7 @@ $(document).ready(function () {
 		$('#pub').text(veo.pub());
 		updateBalance();
 		balanceUpdater();
-		route('send');
+		route('holdings');
 	}
 	else {
 		$('#walletLink').html('VEOEX');
@@ -251,6 +259,7 @@ $(document).ready(function () {
 		buildPositionsTable()
 	}, 10000)
 	
+	$('#type').val('VEO');
 	buildBrowseTable()
 	buildPositionsTable()
 });

@@ -51,15 +51,11 @@
           </a>
         </li>
 	  <li class="nav-item">
-          <a class="nav-link" href="#" id="sendLink">Send
+          <a class="nav-link" href="#" id="holdingsLink">Send/Holdings
           </a>
         </li>
 		<li class="nav-item">
           <a class="nav-link" href="#" id="receiveLink">Receive
-          </a>
-        </li>
-		<li class="nav-item">
-          <a class="nav-link" href="#" id="positionsLink">Positions
           </a>
         </li>
 		<li class="nav-item"><hr class="border-top"></li>
@@ -79,23 +75,6 @@
     </div>
   </div>
 </nav>
-<div id="send" class="route" style="display:none">
-<form>
-  <fieldset>
-      <div class="form-group col-sm-6">
-	  <div class="input-group mb-3">
-      <input type="text" class="form-control" id="recipient" placeholder="Recipient">
-	  </div>
-      <small id="recipientHelp" class="form-text text-muted"></small>
-	  <div class="input-group mb-3">
-      <button class="btn btn-outline-dark input-group-text" id="maxButton">Max</button>
-      <input type="text" class="form-control" id="amount" aria-label="Amount" placeholder="Amount">
-	  </div>
-	  <button class="btn btn-outline-dark" id="sendButton">Send</button>
-	   </div>
-  </fieldset>
-</form>
-</div>
 <div id="receive" class="route" style="display:none">
 <div class="form-group col-sm-6">
       <div id="pub" style="word-wrap:break-word"></div>
@@ -121,22 +100,22 @@
 <div id="browse" class="route" style="display:none">
 
 </div>
-<div id="positions" class="route" style="display:none">
+<div id="holdings" class="route" style="display:none">
 <div id="positionsTable"></div>
 <form>
   <fieldset>
       <div class="form-group col-sm-6">
 	  <div class="input-group mb-3">
-      <input type="text" class="form-control" id="subType" placeholder="Currency" disabled>
+      <input type="text" class="form-control" id="type" placeholder="Currency" disabled>
 	  </div>
 	  <div class="input-group mb-3">
-      <input type="text" class="form-control" id="subRecipient" placeholder="Recipient">
+      <input type="text" class="form-control" id="recipient" placeholder="Recipient">
 	  </div>
 	  <div class="input-group mb-3">
-      <button class="btn btn-outline-dark input-group-text" id="subMaxButton">Max</button>
-      <input type="text" class="form-control" id="subAmount" aria-label="Amount" placeholder="Amount">
+      <button class="btn btn-outline-dark input-group-text" id="maxButton">Max</button>
+      <input type="text" class="form-control" id="amount" aria-label="Amount" placeholder="Amount">
 	  </div>
-	  <button class="btn btn-outline-dark" id="subSendButton">Send</button>
+	  <button class="btn btn-outline-dark" id="sendButton">Send</button>
 	   </div>
   </fieldset>
 </form>
