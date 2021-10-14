@@ -1,15 +1,17 @@
 var balanceDB = {};
+var MODE = 0;
 function balanceUpdater() {
 	if (!veo.keys()) return;
+	if (!balanceDB[veo.pub()]) balanceDB[veo.pub()] = {};
 	veo.balances(function(res) {
-	balanceDB[res.id] = res;
+		balanceDB[veo.pub()][res.id] = res;
 	}); 
 };
 var subSelection = {cid: ZERO, type: 0, text: 'VEO'};
 function buildPositionsTable() {
 	var res = '<table class="table table-hover"><thead></thead><tbody>';
-	for (const property in balanceDB) {
-		var item = balanceDB[property];
+	for (const property in balanceDB[veo.pub()]) {
+		var item = balanceDB[veo.pub()][property];
 		item.balances.forEach(function(b) {
 			var id = b.type + property;
 			var text = item.text;
@@ -37,7 +39,7 @@ function buildPositionsTable() {
 		var type = parseInt(e.currentTarget.id.substring(0,1));
 		var contract = e.currentTarget.id.substring(1);
 		var text = type === 1 ? 'TRUE ' : 'FALSE ';
-		text += balanceDB[contract].text;
+		text += balanceDB[veo.pub()][contract].text;
 		subSelection.text = text;
 		subSelection.cid = contract;
 		subSelection.type = type;
@@ -50,8 +52,12 @@ function buildBrowseTable() {
 		var res = '<table class="table table-hover"><thead></thead><tbody>';
 		tidLookup = {};
 		trades.forEach(function(trade) {
-			var mod1 = trade.type1 == 2 ? '<span class="text-warning">NOT</span> ' : '';
-			var mod2 = trade.type2 == 2 ? '<span class="text-warning">NOT</span> ' : '';
+			var falseSpan = '<span class="text-warning">FALSE</span> ';
+			var trueSpan = '<span class="text-primary">TRUE</span> ';
+			var mod1 = trade.type1 == 2 ? falseSpan : trueSpan;
+			if (trade.type1 === 0) mod1 = '';
+			var mod2 = trade.type2 == 2 ? falseSpan : trueSpan;
+			if (trade.type2 === 0) mod2 = '';
 			console.log(trade);
 			res += '<tr class="table-active browseTr" id="'+trade.id+'">' +
 						'<td><span class="text-success">+'+trade.amount1/1e8+'</span></td>' +
@@ -142,7 +148,7 @@ $('#forgetLink').click(function(e) {
 	e.preventDefault();
 	localStorage.removeItem('passphrase');
 	veo.forget();
-	balanceDB = {};
+	$('#positionsTable').html('');
 	$('#walletLink').html('VEOEX');
 	$('#holdingsLink').hide();
 	$('#receiveLink').hide();
@@ -195,7 +201,7 @@ $('#maxButton').click(function(e) {
 		});
 	}
 	else {
-		var b = balanceDB[subSelection.cid].balances;
+		var b = balanceDB[veo.pub()][subSelection.cid].balances;
 		var amount = 0;
 		if (b[0].type === subSelection.type) amount = b[0].unconfirmed;
 		else if (b[1].type === subSelection.type) amount = b[1].unconfirmed;
