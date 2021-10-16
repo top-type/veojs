@@ -50,6 +50,10 @@ function buildPositionsTable() {
 function buildBrowseTable() {
 	veo.trades(function(trades) {
 		var res = '<table class="table table-hover"><thead></thead><tbody>';
+		if (MODE === 0) {
+			res += '<tr><th scope="col">Event</th><th scope="col">You risk</th><th scope="col">They Risk</th></tr>'
+		}
+    
 		tidLookup = {};
 		trades.forEach(function(trade) {
 			var falseSpan = '<span class="text-warning">FALSE</span> ';
@@ -59,19 +63,29 @@ function buildBrowseTable() {
 			var mod2 = trade.type2 == 2 ? falseSpan : trueSpan;
 			if (trade.type2 === 0) mod2 = '';
 			console.log(trade);
-			res += '<tr class="table-active browseTr" id="'+trade.id+'">' +
+			if (MODE === 1) {
+				res += '<tr class="table-active browseTr" id="'+trade.id+'">' +
 						'<td><span class="text-success">+'+trade.amount1/1e8+'</span></td>' +
 						'<td>'+ mod1 + trade.text1.substring(0, 10)+'</td>' +
 						'<td><span class="text-danger">-'+trade.amount2/1e8+'</span></td>' +
 						'<td>'+ mod2 + trade.text2.substring(0, 10)+'</td>' +
 						'</tr>';
+			}
+			else if ((MODE === 0) && (trade.type1 === 0)) {
+				var riskAmount = (trade.amount2 - trade.amount1)/1e8;
+				var mod2 = trade.type2 == 2 ? trueSpan : falseSpan;
+				res += '<tr class="table-active browseTr" id="'+trade.id+'">' +
+				'<td>'+ mod2 + trade.text2.substring(0, 10)+'</td>' +
+				'<td><span class="text-danger">-'+ riskAmount+'</span></td>' +
+				'<td><span class="text-success">+'+trade.amount1/1e8+'</span></td>'
+			}
 		tidLookup[trade.id] = [trade.text2,trade.raw];
 		});
 		res += '</tbody></table>';
 		$('#browse').html(res);
 		$('.browseTr').click(function(e) {
 			e.preventDefault();
-			accept(...tidLookup[e.currentTarget.id]);
+			accept(...tidLookup[e.currentTarget.id], console.log);
 		});
 	});
 }
@@ -235,7 +249,12 @@ $('#createButton').click(function(e) {
 	veo.makeBet(text, flag, amount1, amount1 + amount2, expires);
 });
 
-
+$('#modeCheck').on('change', function (e) {
+    e.preventDefault();
+	if (MODE === 1) MODE = 0;
+	else MODE = 1;
+	buildBrowseTable();
+});
 
 
 $(document).ready(function () {
