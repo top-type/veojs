@@ -1,5 +1,6 @@
 var veo = {};
 var ZERO = btoa(array_to_string(integer_to_array(0, 32)));
+var DELAY99 = 10;
 
 veo.server = function(ip,port) {
 	if (ip) {
@@ -232,7 +233,7 @@ function createOffer(text, flag1, flag2,  veoAmount, subAmount, expires) {
 function makeBet(text, flag, amount1, amount2, expires, callback) {
 	var offer = createOffer(text, flag, true, amount1, amount2, expires);
 	var fee = 200000;
-	var offer99 = createOffer(text, flag, false, Math.round((amount2 * 0.998) - (fee * 5)), amount2, expires+5);
+	var offer99 = createOffer(text, flag, false, Math.round((amount2 * 0.998) - (fee * 5)), amount2, DELAY99);
 	console.log(offer,offer99);
 	var MP = 1;
 	rpc.post(["add", 3, btoa(text), 0, MP, ZERO, 0], function(res1) {
@@ -243,7 +244,6 @@ function makeBet(text, flag, amount1, amount2, expires, callback) {
 };
 veo.makeBet = callCreator(makeBet, 5);
 
-
 function accept(text, swap_offer, callback) {
 	var MP = 1;
 	var contract = scalar_derivative.maker(text, MP);
@@ -252,11 +252,17 @@ function accept(text, swap_offer, callback) {
     var SourceType = 0;
 	var fee = 200000;
 	var cid = binary_derivative.id_maker(CH, 2);
-	if ((cid !== swap_offer[1][7]) || (ZERO !== swap_offer[1][4])) return ("Mismatch");
 	merkle.request_proof("accounts", keys.pub(), function(Acc){
 		if (Acc === 'empty') return("Account not exist");
 		var bal = Acc[1];
 		var Nonce = Acc[2] + 1;
+		if ((cid !== swap_offer[1][7]) || (ZERO !== swap_offer[1][4])) {
+			//simple accept
+			var swap_tx = ["swap_tx2", keys.pub(), Nonce, fee, swap_offer, 1];
+			var stx = keys.sign(swap_tx);
+			post_txs([stx], callback)
+			return;
+		}
 		var mintTx = ["contract_use_tx", 0,0,0, cid, swap_offer[1][9], 2, ZERO, 0];
 		var txs = [];
 		merkle.request_proof("contracts", cid, function(Contract){
@@ -271,7 +277,7 @@ function accept(text, swap_offer, callback) {
 				console.log(tx);
 				var stx = keys.sign(tx);
 				var offer99 = createOffer(text, swap_offer[1][8] === 2, false, 
-				Math.round((swap_offer[1][9] * 0.998) - (fee * 5)), swap_offer[1][9], 1);
+				Math.round((swap_offer[1][9] * 0.998) - (fee * 5)), swap_offer[1][9], DELAY99);
 				console.log(offer99)
 				post_txs([stx], function(res1) {
 					rpc.post(["add", offer99, 0], function(res2) {
@@ -285,6 +291,5 @@ function accept(text, swap_offer, callback) {
 	});
 return;
 }
-veo.makeBet = callCreator(makeBet, 5);
 
 

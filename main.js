@@ -256,6 +256,25 @@ $('#modeCheck').on('change', function (e) {
 	buildBrowseTable();
 });
 
+function cleanup() {
+	var txs = [];
+	var contractList = balanceDB[keys.pub()]
+	for (property in contractList) { 
+	if (contractList[property].balances.length === 0) continue;
+		var tx = ["contract_use_tx", 0,0,0,
+			property, -contractList[property].balances[0].unconfirmed, 2,
+			ZERO, 0];
+	txs.push(tx);
+	}
+	multi_tx.make(txs, function(tx) {
+		console.log(tx);
+		var stx = keys.sign(tx);
+		post_txs([stx], function(res) {
+			console.log(res);
+		});
+	});
+}
+
 
 $(document).ready(function () {
 	if (localStorage.getItem('passphrase')) {
