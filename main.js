@@ -12,6 +12,7 @@ function buildPositionsTable() {
 	var res = '<table class="table table-hover"><thead></thead><tbody>';
 	for (const property in balanceDB[veo.pub()]) {
 		var item = balanceDB[veo.pub()][property];
+		if (!item || !item.balances) continue;
 		item.balances.forEach(function(b) {
 			var id = b.type + property;
 			var text = item.text;
@@ -51,7 +52,7 @@ function buildBrowseTable() {
 	veo.trades(function(trades) {
 		var res = '<table class="table table-hover"><thead></thead><tbody>';
 		if (MODE === 0) {
-			res += '<tr><th scope="col">Event</th><th scope="col">You risk</th><th scope="col">They Risk</th></tr>'
+			res += '<tr><th scope="col">Event</th><th scope="col">Risk</th><th scope="col">To win</th></tr>'
 		}
     
 		tidLookup = {};
@@ -172,6 +173,11 @@ $('#forgetLink').click(function(e) {
 	route('newAccount');
 });
 
+$('#settingsLink').click(function(e) {
+	e.preventDefault();
+	route('settings');
+});
+
 $('.navbar-nav>li>a').on('click', function(){
     $('.navbar-collapse').collapse('hide');
 });
@@ -275,6 +281,10 @@ function cleanup() {
 	});
 }
 
+function updateHeight() {
+	$('#settingsLink').text('Settings: ' + veo.height());
+};
+
 
 $(document).ready(function () {
 	if (localStorage.getItem('passphrase')) {
@@ -297,13 +307,17 @@ $(document).ready(function () {
 	setInterval(function() {
 		updateBalance();
 		buildBrowseTable()
-	}, 10000)
+	}, 20000)
 	setInterval(function() {
 		balanceUpdater();
 		buildPositionsTable()
-	}, 10000)
+	}, 20000)
+	setInterval(function() {
+		updateHeight();
+	}, 5000)
 	
 	$('#type').val('VEO');
+	updateHeight();
 	buildBrowseTable()
 	buildPositionsTable()
 });
