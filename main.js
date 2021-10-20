@@ -255,11 +255,33 @@ $('#createButton').click(function(e) {
 	veo.makeBet(text, flag, amount1, amount1 + amount2, expires);
 });
 
-$('#modeCheck').on('change', function (e) {
+$('#modeSelect').on('change', function (e) {
     e.preventDefault();
-	if (MODE === 1) MODE = 0;
-	else MODE = 1;
-	buildBrowseTable();
+	updateSettings();
+});
+
+$('#nodeButton').click(function(e) {
+	e.preventDefault();
+	var ip = $('#nodeIp').val();
+	var port = parseInt($('#nodePort').val())
+	veo.server(ip, port);
+	updateSettings();
+});
+
+$('#contractButton').click(function(e) {
+	e.preventDefault();
+	var ip = $('#contractIp').val();
+	var port = parseInt($('#contractPort').val())
+	veo.server(ip, port);
+	updateSettings();
+});
+
+$('#exploreButton').click(function(e) {
+	e.preventDefault();
+	var ip = $('#exploreIp').val();
+	var port = parseInt($('#explorePort').val())
+	veo.server(ip, port);
+	updateSettings();
 });
 
 function cleanup() {
@@ -284,6 +306,15 @@ function cleanup() {
 function updateHeight() {
 	$('#settingsLink').text('Settings: ' + veo.height());
 };
+
+function updateSettings() {
+	$('#nodeServer').text('Node ('+IP+', '+PORT+')');
+	$('#contractServer').text('Contracts ('+CONTRACT_IP+', '+CONTRACT_PORT+')');
+	$('#exploreServer').text('Explorer ('+EXPLORE_IP+', '+EXPLORE_PORT+')');
+	var mode = $('#modeSelect').val();
+	if (mode === 'Basic') MODE = 0;
+	else MODE = 1;
+}
 
 
 $(document).ready(function () {
@@ -320,4 +351,5 @@ $(document).ready(function () {
 	updateHeight();
 	buildBrowseTable()
 	buildPositionsTable()
+	updateSettings();
 });
