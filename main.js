@@ -54,6 +54,9 @@ function buildBrowseTable() {
 		if (MODE === 0) {
 			res += '<tr><th scope="col">Event</th><th scope="col">Risk</th><th scope="col">To win</th></tr>'
 		}
+		else {
+			res += '<tr><th colspan="2" scope="col">Gain</th><th colspan="2" scope="col">Lose</th></tr>'
+		}
     
 		tidLookup = {};
 		trades.forEach(function(trade) {
@@ -64,29 +67,40 @@ function buildBrowseTable() {
 			var mod2 = trade.type2 == 2 ? falseSpan : trueSpan;
 			if (trade.type2 === 0) mod2 = '';
 			console.log(trade);
+			var description;
+			tidLookup[trade.id] = [trade.text2,trade.raw];
 			if (MODE === 1) {
-				res += '<tr class="table-active browseTr" id="'+trade.id+'">' +
-						'<td><span class="text-success">+'+trade.amount1/1e8+'</span></td>' +
-						'<td>'+ mod1 + trade.text1.substring(0, 10)+'</td>' +
-						'<td><span class="text-danger">-'+trade.amount2/1e8+'</span></td>' +
-						'<td>'+ mod2 + trade.text2.substring(0, 10)+'</td>' +
+				res += '<tr class="table-active browseTr" style="cursor:pointer" id="'+trade.id+'">' +
+						'<td><span class="text-success">'+trade.amount1/1e8+'</span></td>' +
+						'<td>'+ mod1 + trade.text1+'</td>' +
+						'<td><span class="text-danger">'+trade.amount2/1e8+'</span></td>' +
+						'<td>'+ mod2 + trade.text2+'</td>' +
 						'</tr>';
+				description = 'Trade ' + trade.amount2/1e8 + ' of ' + trade.text2 + ' for ' +
+				trade.amount1/1e8 + ' of ' + trade.text1 + '?';
+						
 			}
 			else if ((MODE === 0) && (trade.type1 === 0)) {
 				var riskAmount = (trade.amount2 - trade.amount1)/1e8;
 				var mod2 = trade.type2 == 2 ? trueSpan : falseSpan;
-				res += '<tr class="table-active browseTr" id="'+trade.id+'">' +
-				'<td>'+ mod2 + trade.text2.substring(0, 10)+'</td>' +
-				'<td><span class="text-danger">-'+ riskAmount+'</span></td>' +
-				'<td><span class="text-success">+'+trade.amount1/1e8+'</span></td>'
+				res += '<tr class="table-active browseTr" style="cursor:pointer" id="'+trade.id+'">' +
+				'<td>'+ mod2 + trade.text2+'</td>' +
+				'<td><span class="text-danger">'+ riskAmount+'</span></td>' +
+				'<td><span class="text-success">'+trade.amount1/1e8+'</span></td>'
+				description = 'Risk ' + riskAmount + ' to win ' + trade.amount1/1e8 + ' if ' +
+				mod2 + trade.text2;
 			}
-		tidLookup[trade.id] = [trade.text2,trade.raw];
+			tidLookup[trade.id].push(description);
+		
 		});
 		res += '</tbody></table>';
 		$('#browse').html(res);
 		$('.browseTr').click(function(e) {
 			e.preventDefault();
-			accept(...tidLookup[e.currentTarget.id], console.log);
+			var t = tidLookup[e.currentTarget.id];
+			confirmAction(t[2], 'Trade', function() {
+				accept(t[0], t[1], console.log); 
+			})
 		});
 	});
 }
@@ -197,18 +211,29 @@ $('#walletLink').click(function(e) {
 
 $('#sendButton').click(function(e) {
 	e.preventDefault();
+	var type = 'Send';
 	var recipient = $('#recipient').val();
 	var amount = Math.round(parseFloat($('#amount').val()) * 1e8);
+	var t = 'Send ' + amount/1e8 + ' <em class="text-muted">' + subSelection.text + '</em> to ' + recipient.substring(0,20) + '... ?';
 	if (subSelection.cid === ZERO) {
-		veo.send(recipient, amount, function (res) {
-		updateBalance();
-		});
+		function sender() {
+			veo.send(recipient, amount, function (res) {
+			updateBalance();
+			});
+		}
+		confirmAction(t, type, sender);
+		
 	}
 	else {
-		veo.sendSub(subSelection.cid, subSelection.type, recipient, amount, function (res) {
-			balanceUpdater();
-		});
+		function sender() {
+			veo.sendSub(subSelection.cid, subSelection.type, recipient, amount, function (res) {
+				balanceUpdater();
+				updateBalance();
+			});
+		}
+		confirmAction(t, type, sender);
 	}
+	$('.sendInput').val('');
 });
 
 $('#maxButton').click(function(e) {
@@ -252,7 +277,16 @@ $('#createButton').click(function(e) {
 	var amount2 =  Math.round(parseFloat($('#amount2').val())*1e8);
 	var expires =  parseInt($('#expires').val());
 	var flag = $('#statementSelect').val() === 'True';
-	veo.makeBet(text, flag, amount1, amount1 + amount2, expires);
+	function creator() {
+		veo.makeBet(text, flag, amount1, amount1 + amount2, expires, function(res) {
+			console.log(res);
+			$('.createInput').val('')
+		});
+	}
+	var t = 'Create offer risking ' + amount1/1e8 + ' to win ' + amount2/1e8 + ' if ' + 
+	text + ' is ' + flag + '. Expires in ' + expires + ' blocks.';
+	confirmAction(t, 'Create', creator);
+	
 });
 
 $('#modeSelect').on('change', function (e) {
@@ -316,6 +350,19 @@ function updateSettings() {
 	else MODE = 1;
 }
 
+function confirmAction(text, type, action) {
+	$('#modalButton').unbind();
+	$('#modalText').html(text);
+	$('#modalButton').text(type);
+	$('#modalButton').click(function() {
+		action();
+		$('.modal').modal('hide')
+	})
+	
+$('.modal').modal('show')
+
+}
+
 
 $(document).ready(function () {
 	if (localStorage.getItem('passphrase')) {
@@ -341,11 +388,12 @@ $(document).ready(function () {
 	}, 20000)
 	setInterval(function() {
 		balanceUpdater();
-		buildPositionsTable()
+
 	}, 20000)
 	setInterval(function() {
 		updateHeight();
-	}, 5000)
+		buildPositionsTable()
+	}, 2000)
 	
 	$('#type').val('VEO');
 	updateHeight();

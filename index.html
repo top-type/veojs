@@ -113,14 +113,14 @@
   <fieldset>
       <div class="form-group col-sm-6">
 	  <div class="input-group mb-3">
-      <input type="text" class="form-control" id="type" placeholder="Currency" disabled>
+      <input type="text" class="form-control sendInpit" id="type" placeholder="Currency" disabled>
 	  </div>
 	  <div class="input-group mb-3">
-      <input type="text" class="form-control" id="recipient" placeholder="Recipient">
+      <input type="text" class="form-control sendInput" id="recipient" placeholder="Recipient">
 	  </div>
 	  <div class="input-group mb-3">
       <button class="btn btn-outline-dark input-group-text" id="maxButton">Max</button>
-      <input type="text" class="form-control" id="amount" aria-label="Amount" placeholder="Amount">
+      <input type="text" class="form-control sendInput" id="amount" aria-label="Amount" placeholder="Amount">
 	  </div>
 	  <button class="btn btn-outline-dark" id="sendButton">Send</button>
 	   </div>
@@ -133,22 +133,22 @@
   <div class="form-group col-sm-6">
 	<div class="form-group">
 	<div class="input-group mb-3">
-	<input type="text" class="form-control" id="statement" placeholder="Statement">
+	<input type="text" class="form-control createInput" id="statement" placeholder="Statement">
 	</div>
 	<div class="input-group mb-3">
-	<select class="form-select" id="statementSelect">
+	<select class="form-select createInput" id="statementSelect">
         <option>True</option>
         <option>False</option>
     </select>
 	</div>
 	<div class="input-group mb-3">
-	<input type="text" class="form-control" id="amount1" placeholder="Amount you risk">
+	<input type="text" class="form-control createInput" id="amount1" placeholder="Risk">
 	</div>
 	<div class="input-group mb-3">
-	<input type="text" class="form-control" id="amount2" placeholder="Amount they risk">
+	<input type="text" class="form-control createInput" id="amount2" placeholder="To win">
 	</div>
 	<div class="input-group mb-3">
-	<input type="text" class="form-control" id="expires" placeholder="expires (in blocks)">
+	<input type="text" class="form-control createInput" id="expires" placeholder="expires (in blocks)">
 	</div>
 	<button class="btn btn-outline-dark" id="createButton">Create</button>
 	</div>
@@ -201,6 +201,24 @@
   </fieldset>
 </form>
 </div>
+	<div class="modal">
+	<div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="modalText">Send to</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" id="modalButton">Send</button>
+      </div>
+    </div>
+	</div>
+	</div>
 	<script type="text/javascript" src="main.js" ></script>
   </body>
 </html>
