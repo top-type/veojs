@@ -370,7 +370,7 @@ $(document).ready(function () {
 		$('#pub').text(veo.pub());
 		var qr = new QRious({
           element: document.getElementById('qr'),
-          value: veo.pub()
+          value: 'veoex.com'
         });
 		updateBalance();
 		balanceUpdater();

@@ -30,8 +30,6 @@
 	<script type="text/javascript" src="multi_tx.js" ></script>
 		
 	<script type="text/javascript" src="qr.js" ></script>
-	<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
-
 	<script type="text/javascript" src="init.js" ></script>
 	<script type="text/javascript" src="jquery.js" ></script>
 	<script type="text/javascript" src="bootstrap.js" ></script>
@@ -89,7 +87,6 @@
 <div class="form-group col-sm-6">
       <div id="pub" style="word-wrap:break-word"></div>
         <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
-		<div><canvas id="qr"></canvas></div>
      </div>
 	 
 	 
@@ -228,20 +225,5 @@
 	</div>
 	<script type="text/javascript" src="main.js" ></script>
   </body>
-  
-<script type="text/javascript">
-  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
-  scanner.addListener('scan', function (content) {
-	alert(content);
-  });
-  Instascan.Camera.getCameras().then(function (cameras) {
-	if (cameras.length > 0) {
-	  scanner.start(cameras[0]);
-	} else {
-	  console.error('No cameras found.');
-	}
-  }).catch(function (e) {
-	console.error(e);
-  });
-</script>
+
 </html>
