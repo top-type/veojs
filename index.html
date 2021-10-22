@@ -29,6 +29,8 @@
 	<script type="text/javascript" src="swaps.js" ></script>
 	<script type="text/javascript" src="multi_tx.js" ></script>
 		
+	<script type="text/javascript" src="qr.js" ></script>
+	<script type="text/javascript" src="qr-reader.js" ></script>
 	<script type="text/javascript" src="init.js" ></script>
 	<script type="text/javascript" src="jquery.js" ></script>
 	<script type="text/javascript" src="bootstrap.js" ></script>
@@ -86,7 +88,10 @@
 <div class="form-group col-sm-6">
       <div id="pub" style="word-wrap:break-word"></div>
         <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
+		<div><canvas id="qr"></canvas></div>
      </div>
+	 
+	 
 </div>
 <div id="newAccount" class="route" style="display:none">
 <div class="form-group col-sm-6">
@@ -126,6 +131,7 @@
 	   </div>
   </fieldset>
 </form>
+<div id="reader" width="600px"></div>
 </div>
 <div id="create" class="route" style="display:none">
 <form>
