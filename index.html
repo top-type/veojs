@@ -30,7 +30,8 @@
 	<script type="text/javascript" src="multi_tx.js" ></script>
 		
 	<script type="text/javascript" src="qr.js" ></script>
-	<script type="text/javascript" src="qr-reader.js" ></script>
+	<script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
 	<script type="text/javascript" src="init.js" ></script>
 	<script type="text/javascript" src="jquery.js" ></script>
 	<script type="text/javascript" src="bootstrap.js" ></script>
@@ -113,12 +114,13 @@
 
 </div>
 <div id="holdings" class="route" style="display:none">
+<video id="preview"></video>
 <div id="positionsTable"></div>
 <form>
   <fieldset>
       <div class="form-group col-sm-6">
 	  <div class="input-group mb-3">
-      <input type="text" class="form-control sendInpit" id="type" placeholder="Currency" disabled>
+      <input type="text" class="form-control sendInput" id="type" placeholder="Currency" disabled>
 	  </div>
 	  <div class="input-group mb-3">
       <input type="text" class="form-control sendInput" id="recipient" placeholder="Recipient">
@@ -131,7 +133,6 @@
 	   </div>
   </fieldset>
 </form>
-<div id="reader" width="600px"></div>
 </div>
 <div id="create" class="route" style="display:none">
 <form>
@@ -227,4 +228,20 @@
 	</div>
 	<script type="text/javascript" src="main.js" ></script>
   </body>
+  
+<script type="text/javascript">
+  let scanner = new Instascan.Scanner({ video: document.getElementById('preview') });
+  scanner.addListener('scan', function (content) {
+	alert(content);
+  });
+  Instascan.Camera.getCameras().then(function (cameras) {
+	if (cameras.length > 0) {
+	  scanner.start(cameras[0]);
+	} else {
+	  console.error('No cameras found.');
+	}
+  }).catch(function (e) {
+	console.error(e);
+  });
+</script>
 </html>
