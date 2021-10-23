@@ -368,10 +368,6 @@ $(document).ready(function () {
 		$('#newAccountLink').hide();
 		veo.setKeys(localStorage.getItem('passphrase'));
 		$('#pub').text(veo.pub());
-		var qr = new QRious({
-          element: document.getElementById('qr'),
-          value: 'veoex.com'
-        });
 		updateBalance();
 		balanceUpdater();
 		route('holdings');
