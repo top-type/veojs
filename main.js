@@ -4,7 +4,7 @@ function balanceUpdater() {
 	if (!veo.keys()) return;
 	if (!balanceDB[veo.pub()]) balanceDB[veo.pub()] = {};
 	veo.balances(function(res) {
-		balanceDB[veo.pub()][res.id] = res;
+		if (res) balanceDB[veo.pub()][res.id] = res;
 	}); 
 };
 var subSelection = {cid: ZERO, type: 0, text: 'VEO'};
@@ -27,7 +27,7 @@ function buildPositionsTable() {
 			}
 			if (b.type === 2) text = '<span class="text-warning">FALSE</span> ' + text;
 			else text = '<span class="text-primary">TRUE</span> ' + text;
-			res += '<tr class="table-active positionTr" id="'+id+'">' +
+			res += '<tr class="table-active positionTr" style="cursor:pointer" id="'+id+'">' +
 						'<td>'+text+'</td>' +
 						'<td>'+balance+'</td>' +
 						'</tr>';
@@ -76,8 +76,8 @@ function buildBrowseTable() {
 						'<td><span class="text-danger">'+trade.amount2/1e8+'</span></td>' +
 						'<td>'+ mod2 + trade.text2+'</td>' +
 						'</tr>';
-				description = 'Trade ' + trade.amount2/1e8 + ' of ' + trade.text2 + ' for ' +
-				trade.amount1/1e8 + ' of ' + trade.text1 + '?';
+				description = 'Gain: ' + trade.amount1/1e8 + ' <em>' + mod1 + trade.text1 + '</em><br>' +
+				'Lose: ' + trade.amount2/1e8 + ' <em>' + mod2 + trade.text2 + '</em>';
 						
 			}
 			else if ((MODE === 0) && (trade.type1 === 0)) {
@@ -87,18 +87,18 @@ function buildBrowseTable() {
 				'<td>'+ mod2 + trade.text2+'</td>' +
 				'<td><span class="text-danger">'+ riskAmount+'</span></td>' +
 				'<td><span class="text-success">'+trade.amount1/1e8+'</span></td>'
-				description = 'Risk ' + riskAmount + ' to win ' + trade.amount1/1e8 + ' if ' +
-				mod2 + trade.text2;
+				description = 'Risk ' + riskAmount + ' to win ' + trade.amount1/1e8 + ' if <em>' +
+				mod2 + trade.text2 + '</em>?';
 			}
 			tidLookup[trade.id].push(description);
 		
 		});
 		res += '</tbody></table>';
-		$('#browse').html(res);
+		$('#browseTable').html(res);
 		$('.browseTr').click(function(e) {
 			e.preventDefault();
 			var t = tidLookup[e.currentTarget.id];
-			confirmAction(t[2], 'Trade', function() {
+			confirmAction(t[2], 'Accept', function() {
 				accept(t[0], t[1], console.log); 
 			})
 		});

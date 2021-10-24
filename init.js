@@ -1,6 +1,6 @@
 var veo = {};
 var ZERO = btoa(array_to_string(integer_to_array(0, 32)));
-var DELAY99 = 10;
+var DELAY99 = 12000;
 
 veo.server = function(ip,port) {
 	if (ip) {
@@ -234,7 +234,6 @@ function makeBet(text, flag, amount1, amount2, expires, callback) {
 	var offer = createOffer(text, flag, true, amount1, amount2, expires);
 	var fee = 200000;
 	var offer99 = createOffer(text, flag, false, Math.round((amount2 * 0.998) - (fee * 5)), amount2, DELAY99);
-	console.log(offer,offer99);
 	var MP = 1;
 	rpc.post(["add", 3, btoa(text), 0, MP, ZERO, 0], function(res1) {
 		rpc.post(["add", offer, offer99], function(res2) {

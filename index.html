@@ -85,7 +85,7 @@
 <div id="receive" class="route" style="display:none">
 <div class="form-group col-sm-6">
       <div id="pub" style="word-wrap:break-word"></div>
-        <button class="btn btn-outline-dark my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
+        <button class="btn btn-light my-2 my-sm-0" type="submit" id="copyButton" >Copy</button>
 	 </div>
 	 
 	 
@@ -97,7 +97,7 @@
   <div class="input-group mb-3">
      <input class="form-control" type="password" placeholder="passphrase"  id="passphrase">
 	</div>
-         <button class="btn btn-outline-dark" type="submit" id="setButton">Set</button>
+         <button class="btn btn-light" type="submit" id="setButton">Set</button>
      </div>
 	   </fieldset>
 </form>
@@ -107,10 +107,10 @@
 
 </div>
 <div id="browse" class="route" style="display:none">
-
+<div class="col-sm-6" id="browseTable"></div>
 </div>
 <div id="holdings" class="route" style="display:none">
-<div id="positionsTable"></div>
+<div class="col-sm-6" id="positionsTable"></div>
 <form>
   <fieldset>
       <div class="form-group col-sm-6">
@@ -121,10 +121,10 @@
       <input type="text" class="form-control sendInput" id="recipient" placeholder="Recipient">
 	  </div>
 	  <div class="input-group mb-3">
-      <button class="btn btn-outline-dark input-group-text" id="maxButton">Max</button>
+      <button class="btn btn-light input-group-text" id="maxButton">Max</button>
       <input type="text" class="form-control sendInput" id="amount" aria-label="Amount" placeholder="Amount">
 	  </div>
-	  <button class="btn btn-outline-dark" id="sendButton">Send</button>
+	  <button class="btn btn-light" id="sendButton">Send</button>
 	   </div>
   </fieldset>
 </form>
@@ -152,7 +152,7 @@
 	<div class="input-group mb-3">
 	<input type="text" class="form-control createInput" id="expires" placeholder="expires (in blocks)">
 	</div>
-	<button class="btn btn-outline-dark" id="createButton">Create</button>
+	<button class="btn btn-light" id="createButton">Create</button>
 	</div>
   </div>
   </fieldset>
@@ -169,7 +169,7 @@
 	  &nbsp;
 	  <input type="text" class="form-control" id="nodePort" placeholder="Port">
 	  &nbsp;
-	  <button class="btn btn-outline-dark" type="button" id="nodeButton">Set</button>
+	  <button class="btn btn-light" type="button" id="nodeButton">Set</button>
 	  </div>
 	  </div>
 	  <div class="form-group mb-3">
@@ -179,7 +179,7 @@
 	  &nbsp;
 	  <input type="text" class="form-control" id="contractPort" placeholder="Port">
 	  &nbsp;
-	  <button class="btn btn-outline-dark" type="button" id="contractButton">Set</button>
+	  <button class="btn btn-light" type="button" id="contractButton">Set</button>
 	  </div>
 	  </div>
 	  <div class="form-group mb-3">
@@ -189,7 +189,7 @@
 	  &nbsp;
 	  <input type="text" class="form-control" id="explorePort" placeholder="Port">
 	  &nbsp;
-	  <button class="btn btn-outline-dark" type="button" id="exploreButton">Set</button>
+	  <button class="btn btn-light" type="button" id="exploreButton">Set</button>
 	  </div>
 	  </div>
 	    <div class="form-group mb-3">
@@ -216,7 +216,7 @@
         <p id="modalText">Send to</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" id="modalButton">Send</button>
+        <button type="button" class="btn btn-light" id="modalButton">Send</button>
       </div>
     </div>
 	</div>
