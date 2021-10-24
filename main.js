@@ -99,7 +99,10 @@ function buildBrowseTable() {
 			e.preventDefault();
 			var t = tidLookup[e.currentTarget.id];
 			confirmAction(t[2], 'Accept', function() {
-				accept(t[0], t[1], console.log); 
+				accept(t[0], t[1], function(res1, res2) {
+					$('#alertText').html('<strong>ACCEPT </strong>' + res1 + ' ' + res2);
+					$('#alert').show();
+				}); 
 			})
 		});
 	});
@@ -219,7 +222,10 @@ $('#sendButton').click(function(e) {
 		function sender() {
 			veo.send(recipient, amount, function (res) {
 			updateBalance();
-			});
+			$('#alertText').html('<strong>SEND</strong> ' + res);
+			$('#alert').show();
+			$('.sendInput').val('');
+			})
 		}
 		confirmAction(t, type, sender);
 		
@@ -229,11 +235,15 @@ $('#sendButton').click(function(e) {
 			veo.sendSub(subSelection.cid, subSelection.type, recipient, amount, function (res) {
 				balanceUpdater();
 				updateBalance();
+				$('#alertText').html('<strong>SEND</strong> ' + res);
+				$('#alert').show();
+				$('.sendInput').val('');
+				$('#walletLink').click();
 			});
 		}
 		confirmAction(t, type, sender);
 	}
-	$('.sendInput').val('');
+
 });
 
 $('#maxButton').click(function(e) {
@@ -267,6 +277,8 @@ $('#copyButton').click(function(e) {
         $body.removeChild($tempInput);
     }
 	copyToClipboard(veo.pub());
+	$('#alertText').html('<strong>COPIED</strong>');
+	$('#alert').show();
 	
 });
 
@@ -278,9 +290,10 @@ $('#createButton').click(function(e) {
 	var expires =  parseInt($('#expires').val());
 	var flag = $('#statementSelect').val() === 'True';
 	function creator() {
-		veo.makeBet(text, flag, amount1, amount1 + amount2, expires, function(res) {
-			console.log(res);
+		veo.makeBet(text, flag, amount1, amount1 + amount2, expires, function(res1, res2) {
 			$('.createInput').val('')
+			$('#alertText').html('<strong>CREATE </strong> ' + res1 + ' ' + res2);
+			$('#alert').show();
 		});
 	}
 	var t = 'Create offer risking ' + amount1/1e8 + ' to win ' + amount2/1e8 + ' if ' + 
@@ -292,6 +305,8 @@ $('#createButton').click(function(e) {
 $('#modeSelect').on('change', function (e) {
     e.preventDefault();
 	updateSettings();
+	$('#alertText').html('<strong>SET </strong> ' + $('#modeSelect').val());
+	$('#alert').show();
 });
 
 $('#nodeButton').click(function(e) {
@@ -300,6 +315,8 @@ $('#nodeButton').click(function(e) {
 	var port = parseInt($('#nodePort').val())
 	veo.server(ip, port);
 	updateSettings();
+	$('#alertText').html('<strong>SET node</strong> ' + ip + ':' + port);
+	$('#alert').show();
 });
 
 $('#contractButton').click(function(e) {
@@ -308,6 +325,8 @@ $('#contractButton').click(function(e) {
 	var port = parseInt($('#contractPort').val())
 	veo.server(ip, port);
 	updateSettings();
+	$('#alertText').html('<strong>SET contract server</strong> ' + ip + ':' + port);
+	$('#alert').show();
 });
 
 $('#exploreButton').click(function(e) {
@@ -316,6 +335,13 @@ $('#exploreButton').click(function(e) {
 	var port = parseInt($('#explorePort').val())
 	veo.server(ip, port);
 	updateSettings();
+	$('#alertText').html('<strong>SET explorer</strong> ' + ip + ':' + port);
+	$('#alert').show();
+});
+
+$('#alertClose').click(function(e) {
+	e.preventDefault();
+	$('#alert').hide();
 });
 
 function cleanup() {
